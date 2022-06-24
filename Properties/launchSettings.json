@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MCHUB (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MCHUB (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

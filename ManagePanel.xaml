@@ -1,0 +1,39 @@
+﻿<Page
+    x:Class="MCHUB.ManagePanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MCHUB"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90px"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding Path=VersionID}" HorizontalAlignment="Left" Margin="51,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}" FontSize="50"/>
+        <ScrollViewer Grid.Row="1" Grid.RowSpan="2" VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                <Expander x:Name="ModView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="模组" HorizontalAlignment="Stretch"/>
+                <Expander x:Name="ResourcePackView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="资源包" Content="This is in the content" HorizontalAlignment="Stretch"/>
+                <Expander x:Name="SaveView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="存档" Content="This is in the content" HorizontalAlignment="Stretch"/>
+                <Expander x:Name="ShaderView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="光影" Content="This is in the content" HorizontalAlignment="Stretch"/>
+                <Expander x:Name="ServerView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="服务器" Content="This is in the content" HorizontalAlignment="Stretch"/>
+                <Expander x:Name="PlayerDataView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="玩家数据" Content="This is in the content" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+        </ScrollViewer>
+        <CommandBar Grid.Row="3" Background="Transparent" IsOpen="False" DefaultLabelPosition="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="Remove" Label="卸载"/>
+                <AppBarButton Icon="OpenLocal" Label="打开文件夹" x:Name="OpenFolderButton" Click="OpenFolderButton_Click"/>
+                <AppBarButton Icon="Play" Label="启动" x:Name="LaunchButton" Click="LaunchButton_Click"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Play" Label="快速启动"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Grid>
+</Page>

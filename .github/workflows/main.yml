@@ -1,7 +1,7 @@
 # This workflow will build and publish a WinUI 3 unpackaged desktop application
 # built on .NET.
 
-name: WinUI 3 unpackaged app
+name: MCHUB - Build
 
 on:
   push:
@@ -23,6 +23,7 @@ jobs:
 
     env:
       Solution_Name: MCHUB.sln                         # Replace with your solution name, i.e. App1.sln.
+      Project_Name : MCHUB
 
     steps:
     - name: Checkout
@@ -58,4 +59,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Upload app
-        path: ${{ env.Solution_Name }}\\bin
+        path: ${{ env.Project_Name }}\\bin

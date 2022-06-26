@@ -59,4 +59,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Upload app
-        path: ${{ env.Project_Name }}\\bin
+        path: bin

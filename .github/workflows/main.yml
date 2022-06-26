@@ -1,7 +1,7 @@
 # This workflow will build and publish a WinUI 3 unpackaged desktop application
 # built on .NET.
 
-name: MCHUB - Build
+name: Build
 
 on:
   push:

@@ -1,4 +1,5 @@
 ﻿using ModuleLauncher.Re.Authenticators;
+using ModuleLauncher.Re.Models.Authenticators;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Windows.Storage.Streams;
 
 namespace MCHUB
@@ -13,6 +15,7 @@ namespace MCHUB
     public static class LauncherDataHelper
     {
         public static List<FileInfo> TempFiles = new();
+        public static List<User> Users = new();
         /// <summary>
         /// 创建并提供一个缓存文件信息。
         /// </summary>
@@ -33,6 +36,30 @@ namespace MCHUB
             foreach (var file in TempFiles)
             {
                 File.Delete(file.FullName);
+            }
+        }
+
+        public static void Init()
+        {
+            Timer timer_userRefresh = new Timer();
+            timer_userRefresh.Enabled = true;
+            timer_userRefresh.Interval = 60000;
+            timer_userRefresh.Start();
+            timer_userRefresh.Elapsed += RefreshUsers;
+        }
+
+        private static void RefreshUsers(object source, ElapsedEventArgs e)
+        {
+            List<Task<AuthenticateResult>> tasks = new();
+            foreach (MojangUser item in Users.FindAll(user => user is MojangUser))
+            {
+                var task = item.Authenticator.Authenticate();
+                task.Start();
+                tasks.Add(task);
+            }
+            foreach (var task in tasks)
+            {
+                task.Wait();
             }
         }
     }
@@ -80,13 +107,30 @@ namespace MCHUB
     {
         public override string Name { get; }
         public override MojangAuthenticator Authenticator { get; }
+        public bool IsAvailabel = false;
 
-        public MojangUser(string username, string password)
+        public MojangUser(string username, string password, bool loginNow = true)
         {
-            Authenticator = new MojangAuthenticator(username, password);        
-            var authentication = Authenticator.Authenticate();
-            authentication.Wait();
-            Name = authentication.Result.Name;
+            if (loginNow == true)
+            {
+                try
+                {
+                    Authenticator = new MojangAuthenticator(username, password);
+                    var authentication = Authenticator.Authenticate();
+                    authentication.Wait();
+                    Name = authentication.Result.Name;
+                    IsAvailabel = true;
+                }
+                catch (Exception)
+                {
+                    throw new UserException(this, "试图登录用户时出错。");
+                }
+            }
+            else
+            {
+                Name = null;
+                Authenticator = new MojangAuthenticator(username, password);
+            }
         }
 
         public override FileInfo GetPersonPicture()

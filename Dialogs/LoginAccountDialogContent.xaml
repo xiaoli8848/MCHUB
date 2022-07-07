@@ -7,34 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Width="340" Height="200" x:Name="Content">
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.8*"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <PersonPicture Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="100" Width="100"/>
-            <StackPanel Grid.Column="1" Orientation="Vertical">
-                <TextBlock Text="XiaoLi8848" Style="{StaticResource SubtitleTextBlockStyle}" Margin="10,12,10,0"/>
-                <TextBlock Text="XLTOM0631@outlook.com" Margin="10,5,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                <TextBlock Text="微软账户，在线" Margin="10,6,10,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                <Grid Margin="0,6,0,0" Height="50">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Source="Images//MicrosoftIcon.png" Width="36" Height="36"/>
-                    <TextBlock Grid.Column="1" Text="Microsoft" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}" FontSize="30"/>
-                </Grid>
-            </StackPanel>
-        </Grid>
-        <CommandBar Grid.Row="1" VerticalAlignment="Bottom" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-            <AppBarButton Icon="Add" Label="登录"/>
-            <AppBarButton Icon="Refresh" Label="刷新"/>
-        </CommandBar>
-    </Grid>
+    <StackPanel>
+        <ComboBox x:Name="combobox" Header="账户类型" SelectedIndex="0" x:FieldModifier="public">
+            <x:String>离线账户</x:String>
+            <x:String>Mojang账户</x:String>
+            <x:String>微软账户</x:String>
+        </ComboBox>
+        <TextBox x:Name="username" Header="账户名：" x:FieldModifier="public"/>
+        <PasswordBox x:Name="password" Header="密码：" Visibility="Collapsed" x:FieldModifier="public"/>
+    </StackPanel>
 </Page>

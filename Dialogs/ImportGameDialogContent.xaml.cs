@@ -53,7 +53,7 @@ namespace MCHUB
                 picker.CommitButtonText = "导入";
                 picker.SettingsIdentifier = "settingsIdentifier";
 
-                var hwnd = WindowNative.GetWindowHandle((App.Current as App).m_window);  // App.m_window?
+                var hwnd = WindowNative.GetWindowHandle((Application.Current as App).m_window);  // App.m_window?
                 InitializeWithWindow.Initialize(picker, hwnd);
 
                 StorageFolder folder = await picker.PickSingleFolderAsync();

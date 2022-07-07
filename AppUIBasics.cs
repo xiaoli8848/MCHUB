@@ -44,13 +44,13 @@ namespace AppUIBasics
         public static void Init(Window mainWindow)
         {
             MainWindow_Handle = WindowNative.GetWindowHandle(mainWindow);
-            MainWindow_ID = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(MainWindow_Handle);
+            MainWindow_ID = Win32Interop.GetWindowIdFromWindow(MainWindow_Handle);
 
             PixelZoom = GetScaleAdjustment();
         }
         public static MainWindow GetMainWindow()
         {
-            return (MainWindow)(App.Current as App).m_window;
+            return (MainWindow)(Application.Current as App).m_window;
         }
         public static AppWindow GetAppWindow()
         {

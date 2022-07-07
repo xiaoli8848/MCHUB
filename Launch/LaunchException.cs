@@ -46,4 +46,13 @@ namespace MCHUB
         {
         }
     }
+
+    public class UserException : ApplicationException
+    {
+        public User User;
+        public UserException(User user, string message) : base(message)
+        {
+            User = user;
+        }
+    }
 }

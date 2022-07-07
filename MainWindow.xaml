@@ -48,14 +48,6 @@
                             <PersonPicture Height="32" Width="32"/>
                             <TextBlock Text="账户" Margin="8,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <Button.Flyout>
-                            <Flyout>
-                                <StackPanel>
-                                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="尚未登录。" Margin="0,0,0,12"/>
-                                    <Button Content="登录账户"/>
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
                     </Button>
                 </Grid>
             </Grid>

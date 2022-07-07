@@ -14,6 +14,8 @@
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Dialogs\LoginAccountDialogContent.xaml" />
+    <None Remove="Images\MicrosoftIcon.png" />
     <None Remove="ImporterGameDialogContent.xaml" />
     <None Remove="LoginAccountDialogContent.xaml" />
     <None Remove="ManagePanel.xaml" />
@@ -44,7 +46,17 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Images\MicrosoftIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Dialogs\LoginAccountDialogContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Dialogs\AccountInfoContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

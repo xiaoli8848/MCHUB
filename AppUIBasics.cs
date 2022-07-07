@@ -39,7 +39,7 @@ namespace AppUIBasics
         public const int ICON_BIG = 1;
         public static IntPtr MainWindow_Handle;
         public static WindowId MainWindow_ID;
-        private static double PixelZoom;
+        public static double PixelZoom;
 
         public static void Init(Window mainWindow)
         {

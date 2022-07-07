@@ -15,6 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="ImporterGameDialogContent.xaml" />
+    <None Remove="LoginAccountDialogContent.xaml" />
     <None Remove="ManagePanel.xaml" />
   </ItemGroup>
 
@@ -43,12 +44,17 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Dialogs\LoginAccountDialogContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="ManagePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="ImporterGameDialogContent.xaml">
+    <Page Update="Dialogs\ImportGameDialogContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Themes\Generic.xaml">

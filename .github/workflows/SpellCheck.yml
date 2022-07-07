@@ -1,0 +1,82 @@
+name: SpellCheck
+on:
+  push:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: '* 8 * * *'
+
+jobs:
+  build:
+    name: Check Spelling
+    # You may pin to the exact commit or the version.
+    # uses: check-spelling/check-spelling@738446c8b00bcc93acbbd8ba7df77ffbb018957f
+    uses: check-spelling/check-spelling@v0.0.20-alpha5
+    with:
+    # The GITHUB_TOKEN secret
+    GITHUB_TOKEN: # default is ${{ github.token }}
+    # Container for spelling configuration
+    bucket: # optional
+    # Folder/Branch within bucket containing spelling configuration
+    project: # optional
+    # Spelling configuration directory
+    config: # optional, default is .github/actions/spelling
+    # Directory root to check for spelling (note that bucket/project/config are independent of this)
+    experimental_path: # optional, default is .
+    # Location of dictionary (if you aren't providing one in your repository)
+    dictionary_url: # optional, default is https://raw.githubusercontent.com/check-spelling/check-spelling/dictionary-$DICTIONARY_VERSION/dict.txt
+    # Version of the dictionary (only used if the url includes $DICTIONARY_VERSION)
+    dictionary_version: # optional, default is 20200211
+    # Debug
+    debug: # optional
+    # (Experimental) Allow users to quote-reply to the bot comment to update the PR
+    experimental_apply_changes_via_bot: # optional, default is 0
+    # Number of CPUs available for running checks
+    experimental_parallel_jobs: # optional, default is 2
+    # Post comment with report
+    post_comment: # optional, default is 1
+    # 
+    capture_output_unknown_words: # optional, default is 
+    # 
+    capture_output_stale_words: # optional, default is 
+    # 
+    capture_output_skipped_files: # optional, default is 
+    # JSON map of prefixes for dictionary urls
+    dictionary_source_prefixes: # optional, default is {"cspell": "https://raw.githubusercontent.com/check-spelling/cspell-dicts/HEAD/dictionaries/"}
+    # Space delimited list of URLs (or `prefix:`+path) to additional word lists
+    extra_dictionaries: # optional, default is 
+    # Compare unknown tokens against these dictionaries and suggest if applicable
+    check_extra_dictionaries: # optional, default is cspell:ada/ada.txt cspell:aws/aws.txt cspell:bash/bash-words.txt cspell:companies/companies.txt cspell:cpp/cpp.txt cspell:csharp/csharp.txt cspell:css/css.txt cspell:django/django.txt cspell:dotnet/dotnet.txt cspell:elixir/elixir.txt cspell:en_GB/src/wordsEnGb.txt cspell:filetypes/filetypes.txt cspell:fonts/fonts.txt cspell:fullstack/fullstack.txt cspell:golang/go.txt cspell:haskell/haskell.txt cspell:html/html.txt cspell:java/java.txt cspell:latex/latex.txt cspell:lua/lua.txt cspell:node/node.txt cspell:npm/npm.txt cspell:php/php.txt cspell:python/python.txt cspell:ruby/ruby.txt cspell:rust/rust.txt cspell:scala/scala.txt
+    # Limit the number of suggested extra dictionaries.
+    extra_dictionary_limit: # optional, default is 5
+    # Try to treat a GitHub event "a" as GitHub event "b" (JSON map). If this flag was available before this tool recognized `pull_request_target`, `{"pull_request_target":"pull_request"}` would have mapped it to `pull_request`.
+    event_aliases: # optional, default is 
+    # Shortest word
+    shortest_word: # optional, default is 3
+    # Longest word
+    longest_word: # optional, default is 
+    # If set, commit updates to expect automatically with this note
+    experimental_commit_note: # optional, default is 
+    # If set, do not do work in response to `push` if there is an open `pull` request to the repository for the branch (this assumes there's a `pull_request_target` event configured).
+    suppress_push_for_open_pull_request: # optional, default is 
+    # Suffix for report title (useful if you are using a matrix strategy or are using experimental_path)
+    report_title_suffix: # optional, default is 
+    # If set, only check files changed since the last push
+    only_check_changed_files: # optional, default is 
+    # Run an internal task instead of responding to a GitHub event. Values: "comment"
+    custom_task: # optional, default is 
+    # Used for passing internal state from the (default) check mode to the comment module
+    internal_state_directory: # optional, default is 
+    # Spell check file paths
+    check_file_names: # optional, default is 
+    # Perform secpoll queries via a public dns server
+    anonymize_secpoll_source: # optional, default is 
+    # Set to the value of the current security advisory to accept the reported risk -- value must match -- do not set if there is no current advisory
+    ignore_security_advisory: # optional, default is 
+    # File size limit
+    largest_file: # optional, default is 1048576
+    # Only report an unknown word this many times
+    unknown_word_limit: # optional, default is 5
+    # Suppress failure code exit code -- it will be available via outputs.result_code
+    quit_without_error: # optional, default is 
+    # Repository with default configuration to use if no configuration is found
+    spell_check_this: # optional, default is 

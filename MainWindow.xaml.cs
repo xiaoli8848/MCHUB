@@ -27,6 +27,7 @@ namespace MCHUB
     public sealed partial class MainWindow : Window
     {
         private AppWindow AppWindow;
+        public List<User> Users;
 
         public MainWindow()
         {
@@ -44,8 +45,21 @@ namespace MCHUB
             var res = Application.Current.Resources;
             res["WindowCaptionBackground"] = Colors.Transparent;
             res["WindowCaptionForeground"] = Colors.Black;
+            if (AppUIBasics.Win32.MainWindow_Handle == AppUIBasics.Win32.GetActiveWindow())
+            {
+                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_INACTIVE, IntPtr.Zero);
+                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_ACTIVE, IntPtr.Zero);
+            }
+            else
+            {
+                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_ACTIVE, IntPtr.Zero);
+                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_INACTIVE, IntPtr.Zero);
+            }
 
             SizeChanged += MainWindow_SizeChanged;
+
+            Users = new List<User>();
+            this.AccountButton.Flyout = new Flyout() { Content = new LoginAccountDialogContent() };
         }
 
         private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
@@ -78,23 +92,13 @@ namespace MCHUB
 
             var leftSpace = controlLeftOffset;
             var rightSpace = totalWidth - controlLeftOffset - Win32.GetActualPixel(CustomTitleBarControls.ActualWidth);
+            int CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
+            RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / AppUIBasics.Win32.PixelZoom);
 
             // TODO 计算窗口按钮宽度并排除
             var leftRect = new RectInt32(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));
-            var rightRect = new RectInt32(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace), Convert.ToInt32(totalHeight));
+            var rightRect = new RectInt32(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace - CaptionButtonOcclusionWidthRight), Convert.ToInt32(totalHeight));
             titleBar.SetDragRectangles(new RectInt32[] { leftRect, rightRect });
-
-            var activeWindow = AppUIBasics.Win32.GetActiveWindow();
-            if (AppUIBasics.Win32.MainWindow_Handle == activeWindow)
-            {
-                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_INACTIVE, IntPtr.Zero);
-                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_ACTIVE, IntPtr.Zero);
-            }
-            else
-            {
-                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_ACTIVE, IntPtr.Zero);
-                AppUIBasics.Win32.SendMessage(AppUIBasics.Win32.MainWindow_Handle, AppUIBasics.Win32.WM_ACTIVATE, AppUIBasics.Win32.WA_INACTIVE, IntPtr.Zero);
-            }
         }
 
         //下载命令
@@ -109,7 +113,7 @@ namespace MCHUB
             ImporterGameDialog importerGameDialog = new ImporterGameDialog(Content.XamlRoot);
             if (await importerGameDialog.ShowAsync() == ContentDialogResult.Primary)
             {
-                foreach (var item in Minecraft.GetMinecrafts((importerGameDialog.Content as ImporterGameDialogContent).PathBox.Text))
+                foreach (var item in Minecraft.GetMinecrafts((importerGameDialog.Content as ImportGameDialogContent).PathBox.Text))
                     Navigation.MenuItems.Add(new NavigationViewItem() { Icon = new SymbolIcon(Symbol.Flag), Content = item.VersionID, Tag = item });
             }
         }
@@ -118,6 +122,11 @@ namespace MCHUB
         {
             if ((sender.SelectedItem as NavigationViewItem).Tag is Minecraft)
                 MainFrame.Navigate(typeof(ManagePanel), (sender.SelectedItem as NavigationViewItem).Tag);
+        }
+
+        private void Window_Closed(object sender, WindowEventArgs args)
+        {
+            LauncherDataHelper.RemoveTempFiles();
         }
     }
 

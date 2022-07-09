@@ -45,7 +45,7 @@ namespace MCHUB
             {
                 throw new LaunchArgumentException(Current, "JavaEnvironment", "Null");
             }
-            Current.LaunchCommand.Execute(new LaunchArgument() { Authenticator = new ModuleLauncher.Re.Authenticators.OfflineAuthenticator("XiaoLi8848"), Fullscreen = false, JavaEnvironment = JavaEnvironment.Current });
+            Current.LaunchCommand.Execute(new LaunchArgument() { Authenticator = MainWindow.CurrentUser.Authenticator, Fullscreen = false, JavaEnvironment = JavaEnvironment.Current });
         }
 
         private void OpenFolderButton_Click(object sender, RoutedEventArgs e)

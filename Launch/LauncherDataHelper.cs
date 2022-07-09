@@ -50,6 +50,11 @@ namespace MCHUB
 
         private static void RefreshUsers(object source, ElapsedEventArgs e)
         {
+            RefreshUsers();
+        }
+
+        public static void RefreshUsers()
+        {
             List<Task<AuthenticateResult>> tasks = new();
             foreach (MojangUser item in Users.FindAll(user => user is MojangUser))
             {

@@ -46,9 +46,9 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\MicrosoftIcon.png">
+    <Resource Include="Images\MicrosoftIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Dialogs\LoginAccountDialogContent.xaml">

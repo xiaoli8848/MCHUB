@@ -35,12 +35,13 @@ namespace MCHUB
             switch (user)
             {
                 case MojangUser mUser:
-                    (content as AccountInfoContent).UserName.Text = user.Name;
                     (content as AccountInfoContent).Info.Text = "在线用户，" + (mUser.IsAvailabel ? "在线" : "离线");
+                    (content as AccountInfoContent).RefreshButton.Visibility = Visibility.Visible;
+                    (content as AccountInfoContent).RefreshButton.Click += (sender, args) => { LauncherDataHelper.RefreshUsers(); };
                     break;
                 case OfflineUser _:
-                    (content as AccountInfoContent).UserName.Text = user.Name;
                     (content as AccountInfoContent).Info.Text = "离线用户，离线";
+                    (content as AccountInfoContent).RefreshButton.Visibility = Visibility.Collapsed;
                     break;
                 case null:
                     StackPanel panel = new();
@@ -50,8 +51,10 @@ namespace MCHUB
                     button.Click += async (sender, args) => { await LoginAccountDialog.LoginAsync(AppUIBasics.Win32.GetMainWindow().Content.XamlRoot); };
                     panel.Children.Add(button);
                     content = panel;
-                    break;
+                    return content;
             }
+            (content as AccountInfoContent).UserName.Text = user.Name;
+            (content as AccountInfoContent).LoginButton.Click += async (sender, e) => { await LoginAccountDialog.LoginAsync(AppUIBasics.Win32.GetMainWindow().Content.XamlRoot); };
             return content;
         }
     }

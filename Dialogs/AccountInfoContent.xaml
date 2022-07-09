@@ -33,8 +33,8 @@
             </StackPanel>
         </Grid>
         <CommandBar Grid.Row="1" VerticalAlignment="Bottom" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-            <AppBarButton Icon="Add" Label="登录"/>
-            <AppBarButton Icon="Refresh" Label="刷新"/>
+            <AppBarButton Icon="Add" Label="登录" x:Name="LoginButton"/>
+            <AppBarButton Icon="Refresh" Label="刷新" x:Name="RefreshButton"/>
         </CommandBar>
     </Grid>
 </Page>

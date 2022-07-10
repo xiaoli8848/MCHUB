@@ -19,7 +19,7 @@ public sealed partial class AccountInfoContent : Page
             case MojangUser mUser:
                 (content as AccountInfoContent).Info.Text = "在线用户，" + (mUser.IsAvailabel ? "在线" : "离线");
                 (content as AccountInfoContent).RefreshButton.Visibility = Visibility.Visible;
-                (content as AccountInfoContent).RefreshButton.Click += (sender, args) => { LauncherDataHelper.RefreshUsers(); };
+                (content as AccountInfoContent).RefreshButton.Click += async (_, _) => { await LauncherDataHelper.RefreshUsers(); };
                 break;
             case OfflineUser _:
                 (content as AccountInfoContent).Info.Text = "离线用户，离线";
@@ -36,7 +36,7 @@ public sealed partial class AccountInfoContent : Page
                 return content;
         }
         (content as AccountInfoContent).UserName.Text = user.Name;
-        (content as AccountInfoContent).LoginButton.Click += async (sender, e) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
+        (content as AccountInfoContent).LoginButton.Click += async (_, _) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
         return content;
     }
 }

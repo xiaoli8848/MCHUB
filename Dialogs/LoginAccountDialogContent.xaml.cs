@@ -10,6 +10,7 @@ public sealed partial class LoginAccountDialogContent : Page
 
     private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        //如果是离线账户，则隐藏密码栏。
         password.Visibility = (e.AddedItems[0] as string) != "离线账户" ? Visibility.Visible : Visibility.Collapsed;
     }
 }
@@ -31,6 +32,9 @@ public sealed class LoginAccountDialog : ContentDialog
         (this.Content as LoginAccountDialogContent).username.TextChanged += OnUsernameChanged;
     }
 
+    /// <summary>
+    /// 侦测当用户名与密码都不为空时，登录按钮可用。
+    /// </summary>
     private void OnUsernameChanged(object sender, TextChangedEventArgs args)
     {
         this.IsPrimaryButtonEnabled =
@@ -38,13 +42,16 @@ public sealed class LoginAccountDialog : ContentDialog
            (this.Content as LoginAccountDialogContent).username.Text.Length != 0 :
            (this.Content as LoginAccountDialogContent).password.Password.Length != 0 && (this.Content as LoginAccountDialogContent).username.Text.Length != 0;
     }
+
+    /// <summary>
+    /// 侦测当用户名与密码都不为空时，登录按钮可用。
+    /// </summary>
     private void OnPasswordChanged(object sender, RoutedEventArgs args)
     {
         this.IsPrimaryButtonEnabled =
             (string)(this.Content as LoginAccountDialogContent).combobox.SelectedItem == "离线账户" ?
             (this.Content as LoginAccountDialogContent).username.Text.Length != 0 :
             (this.Content as LoginAccountDialogContent).password.Password.Length != 0 && (this.Content as LoginAccountDialogContent).username.Text.Length != 0;
-
     }
 
     public static async Task LoginAsync(XamlRoot root)

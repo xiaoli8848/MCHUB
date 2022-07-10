@@ -11,11 +11,35 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="90px"/>
             <RowDefinition/>
-            <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="{Binding Path=VersionID}" HorizontalAlignment="Left" Margin="51,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}" FontSize="50"/>
-        <ScrollViewer Grid.Row="1" Grid.RowSpan="2" VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Path=VersionID}" HorizontalAlignment="Left" Margin="38,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}" FontSize="46"/>
+            <CommandBar Grid.Column="1" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton Label="模组">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7B8;"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton Label="资源包">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE729;"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton Label="地图">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE945;"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
             <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
                 <Expander x:Name="ModView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="模组" HorizontalAlignment="Stretch"/>
                 <Expander x:Name="ResourcePackView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="资源包" Content="This is in the content" HorizontalAlignment="Stretch"/>
@@ -25,7 +49,7 @@
                 <Expander x:Name="PlayerDataView" IsExpanded="True" ExpandDirection="Down" VerticalAlignment="Stretch" Header="玩家数据" Content="This is in the content" HorizontalAlignment="Stretch"/>
             </StackPanel>
         </ScrollViewer>
-        <CommandBar Grid.Row="3" Background="Transparent" IsOpen="False" DefaultLabelPosition="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
+        <CommandBar Grid.Row="2" Background="Transparent" IsOpen="False" DefaultLabelPosition="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
             <CommandBar.PrimaryCommands>
                 <AppBarButton Icon="Remove" Label="卸载"/>
                 <AppBarButton Icon="OpenLocal" Label="打开文件夹" x:Name="OpenFolderButton" Click="OpenFolderButton_Click"/>

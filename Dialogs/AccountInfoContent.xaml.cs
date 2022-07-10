@@ -48,13 +48,13 @@ namespace MCHUB
                     TextBlock text = new() { Style = (Style)Application.Current.Resources["BaseTextBlockStyle"], Text = "尚未登录。", Margin = new Thickness(0, 0, 0, 12) };
                     panel.Children.Add(text);
                     Button button = new Button() { Content = "登录" };
-                    button.Click += async (sender, args) => { await LoginAccountDialog.LoginAsync(AppUIBasics.Win32.GetMainWindow().Content.XamlRoot); };
+                    button.Click += async (sender, args) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
                     panel.Children.Add(button);
                     content = panel;
                     return content;
             }
             (content as AccountInfoContent).UserName.Text = user.Name;
-            (content as AccountInfoContent).LoginButton.Click += async (sender, e) => { await LoginAccountDialog.LoginAsync(AppUIBasics.Win32.GetMainWindow().Content.XamlRoot); };
+            (content as AccountInfoContent).LoginButton.Click += async (sender, e) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
             return content;
         }
     }

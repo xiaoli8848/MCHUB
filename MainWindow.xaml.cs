@@ -20,11 +20,11 @@ namespace MCHUB
         public MainWindow()
         {
             InitializeComponent();
-            Win32.Init(this);
+            UIHelper.Init(this);
             LauncherDataHelper.Init();
 
-            AppWindow = Win32.GetAppWindow();
-            AppWindow.Resize(new SizeInt32(Win32.GetActualPixel(800), Win32.GetActualPixel(600)));
+            AppWindow = UIHelper.GetAppWindow();
+            AppWindow.Resize(new SizeInt32(UIHelper.GetActualPixel(800), UIHelper.GetActualPixel(600)));
             //自定义标题栏。
             Title = "MCHUB";
             //设置标题栏颜色并刷新。
@@ -33,15 +33,15 @@ namespace MCHUB
             ResourceDictionary res = Application.Current.Resources;
             res["WindowCaptionBackground"] = Colors.Transparent;
             res["WindowCaptionForeground"] = Colors.Black;
-            if (Win32.MainWindow_Handle == Win32.GetActiveWindow())
+            if (UIHelper.MainWindow_Handle == UIHelper.GetActiveWindow())
             {
-                Win32.SendMessage(Win32.MainWindow_Handle, Win32.WM_ACTIVATE, Win32.WA_INACTIVE, IntPtr.Zero);
-                Win32.SendMessage(Win32.MainWindow_Handle, Win32.WM_ACTIVATE, Win32.WA_ACTIVE, IntPtr.Zero);
+                UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
+                UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_ACTIVE, IntPtr.Zero);
             }
             else
             {
-                Win32.SendMessage(Win32.MainWindow_Handle, Win32.WM_ACTIVATE, Win32.WA_ACTIVE, IntPtr.Zero);
-                Win32.SendMessage(Win32.MainWindow_Handle, Win32.WM_ACTIVATE, Win32.WA_INACTIVE, IntPtr.Zero);
+                UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_ACTIVE, IntPtr.Zero);
+                UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
             }
 
             SizeChanged += MainWindow_SizeChanged;
@@ -68,19 +68,19 @@ namespace MCHUB
             AppWindowTitleBar titleBar = AppWindow.TitleBar;
 
             // 标题栏实际尺寸。
-            int totalWidth = Win32.GetActualPixel(AppTitleBar.ActualWidth);
-            int totalHeight = Win32.GetActualPixel(AppTitleBar.ActualHeight);
+            int totalWidth = UIHelper.GetActualPixel(AppTitleBar.ActualWidth);
+            int totalHeight = UIHelper.GetActualPixel(AppTitleBar.ActualHeight);
 
             // 自定义控件的左边界相对于整个控件左边界的偏移量。
-            int controlLeftOffset = Win32.GetActualPixel(CustomTitleBarControls.ActualOffset.X);
+            int controlLeftOffset = UIHelper.GetActualPixel(CustomTitleBarControls.ActualOffset.X);
 
             // 自定义控件的右边界相对于整个控件左边界的偏移量。
-            int controlRightOffset = Win32.GetActualPixel(controlLeftOffset + CustomTitleBarControls.ActualWidth);
+            int controlRightOffset = UIHelper.GetActualPixel(controlLeftOffset + CustomTitleBarControls.ActualWidth);
 
             int leftSpace = controlLeftOffset;
-            int rightSpace = totalWidth - controlLeftOffset - Win32.GetActualPixel(CustomTitleBarControls.ActualWidth);
+            int rightSpace = totalWidth - controlLeftOffset - UIHelper.GetActualPixel(CustomTitleBarControls.ActualWidth);
             int CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
-            RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / Win32.PixelZoom);
+            RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / UIHelper.PixelZoom);
 
             // TODO 计算窗口按钮宽度并排除
             RectInt32 leftRect = new(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));

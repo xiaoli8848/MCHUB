@@ -28,7 +28,7 @@ public sealed class ImporterGameDialog : ContentDialog
         this.PrimaryButtonText = "导入";
         this.XamlRoot = root;
 
-        (this.Content as ImportGameDialogContent).PickerButton.Click += async (sender, arg) =>
+        (this.Content as ImportGameDialogContent).PickerButton.Click += async (_, _) =>
         {
             FolderPicker picker = new()
             {

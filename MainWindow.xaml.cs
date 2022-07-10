@@ -10,6 +10,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        //初始化工具类。
         UIHelper.Init(this);
         LauncherDataHelper.Init();
 
@@ -49,6 +50,7 @@ public sealed partial class MainWindow : Window
 
     /// <summary>
     /// 更新窗口标题栏拖拽部分，便于自定义标题栏控件接收鼠标输入。
+    /// <br/>
     /// 将可拖拽部分分为两部分——自定义控件的左右两边的部分，然后计算两个部分对应的矩形区域，最后注册到窗口标题栏处。
     /// </summary>
     public void UpdateDragRects()
@@ -105,10 +107,23 @@ public sealed partial class MainWindow : Window
     }
 }
 
+/// <summary>
+/// 指示启动器状态。
+/// <br/>
+/// OK - 就绪。
+/// <br/>
+/// LAUNCHING - 正在启动游戏。
+/// <br/>
+/// DOWNLOADING - 正在下载游戏。
+/// <br/>
+/// GAMING - 游戏中。
+/// <br/>
+/// ERROR - 出错了。
+/// </summary>
 public enum LauncherState
 {
     OK,
-    LUNCHING,
+    LAUNCHING,
     DOWNLOADING,
     GAMING,
     ERROR

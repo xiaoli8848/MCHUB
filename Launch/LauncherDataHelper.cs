@@ -43,23 +43,17 @@ public static class LauncherDataHelper
         timer_userRefresh.Elapsed += RefreshUsers;
     }
 
-    private static void RefreshUsers(object source, ElapsedEventArgs e)
+    private static async void RefreshUsers(object source, ElapsedEventArgs e)
     {
-        RefreshUsers();
+        await RefreshUsers();
     }
 
-    public static void RefreshUsers()
+    public static async Task RefreshUsers()
     {
         List<Task<AuthenticateResult>> tasks = new();
         foreach (MojangUser item in Users.FindAll(user => user is MojangUser))
         {
-            Task<AuthenticateResult> task = item.Authenticator.Authenticate();
-            task.Start();
-            tasks.Add(task);
-        }
-        foreach (Task<AuthenticateResult> task in tasks)
-        {
-            task.Wait();
+            await item.Authenticator.Authenticate();
         }
     }
 }

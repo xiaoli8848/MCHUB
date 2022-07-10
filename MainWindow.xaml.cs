@@ -34,9 +34,7 @@ public sealed partial class MainWindow : Window
             UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
         }
 
-        SizeChanged += MainWindow_SizeChanged;
-
-        AccountButton.Click += (sender, args) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
+        AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
     }
 
     private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
@@ -81,7 +79,7 @@ public sealed partial class MainWindow : Window
     //下载命令
     private void DownloadGameCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
     {
-
+        throw new NotImplementedException();
     }
 
     //导入命令

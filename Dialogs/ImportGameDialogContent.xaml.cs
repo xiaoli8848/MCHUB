@@ -37,7 +37,7 @@ public sealed class ImporterGameDialog : ContentDialog
                 SettingsIdentifier = "settingsIdentifier"
             };
 
-            IntPtr hwnd = WindowNative.GetWindowHandle((Application.Current as App).m_window);  // App.m_window?
+            IntPtr hwnd = WindowNative.GetWindowHandle((Application.Current as App).m_window);
             InitializeWithWindow.Initialize(picker, hwnd);
 
             StorageFolder folder = await picker.PickSingleFolderAsync();

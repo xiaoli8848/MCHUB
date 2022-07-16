@@ -18,48 +18,24 @@ namespace MCHUB;
 /// </summary>
 public static class UIHelper
 {
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+    public const int ICON_BIG = 1;
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
+    public const int ICON_SMALL = 0;
 
-    [DllImport("user32.dll")]
-    public static extern IntPtr GetActiveWindow();
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-    private static extern IntPtr GetModuleHandle(IntPtr moduleName);
-
-    [DllImport("Shcore.dll", SetLastError = true)]
-    private static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
-
-    public const int WM_ACTIVATE = 0x0006;
     public const int WA_ACTIVE = 0x01;
+
     //static int WA_CLICKACTIVE = 0x02;
     public const int WA_INACTIVE = 0x00;
 
+    public const int WM_ACTIVATE = 0x0006;
+
     public const int WM_SETICON = 0x0080;
-    public const int ICON_SMALL = 0;
-    public const int ICON_BIG = 1;
+
     public static IntPtr MainWindow_Handle;
+
     public static WindowId MainWindow_ID;
+
     public static double PixelZoom;
-
-    public static void Init(Window mainWindow)
-    {
-        MainWindow_Handle = WindowNative.GetWindowHandle(mainWindow);
-        MainWindow_ID = Win32Interop.GetWindowIdFromWindow(MainWindow_Handle);
-
-        PixelZoom = GetScaleAdjustment();
-    }
-    public static MainWindow GetMainWindow()
-    {
-        return (MainWindow)(Application.Current as App).m_window;
-    }
-    public static AppWindow GetAppWindow()
-    {
-        return AppWindow.GetFromWindowId(MainWindow_ID);
-    }
 
     private enum Monitor_DPI_Type : int
     {
@@ -68,6 +44,46 @@ public static class UIHelper
         MDT_Raw_DPI = 2,
         MDT_Default = MDT_Effective_DPI
     }
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetActiveWindow();
+
+    /// <summary>
+    /// 获取像素数量缩放后对应的像素数量。
+    /// </summary>
+    /// <param name="pixel">缩放前的像素数量。</param>
+    /// <returns>返回缩放后应当由的像素数量。</returns>
+    public static int GetActualPixel(double pixel)
+    {
+        return Convert.ToInt32(pixel * PixelZoom);
+    }
+
+    public static AppWindow GetAppWindow()
+    {
+        return AppWindow.GetFromWindowId(MainWindow_ID);
+    }
+
+    public static MainWindow GetMainWindow()
+    {
+        return (MainWindow)(Application.Current as App).m_window;
+    }
+
+    public static void Init(Window mainWindow)
+    {
+        MainWindow_Handle = WindowNative.GetWindowHandle(mainWindow);
+        MainWindow_ID = Win32Interop.GetWindowIdFromWindow(MainWindow_Handle);
+
+        PixelZoom = GetScaleAdjustment();
+    }
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+
+    [DllImport("Shcore.dll", SetLastError = true)]
+    private static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr GetModuleHandle(IntPtr moduleName);
 
     /// <summary>
     /// 获取缩放系数。
@@ -90,13 +106,6 @@ public static class UIHelper
         return scaleFactorPercent / 100.0;
     }
 
-    /// <summary>
-    /// 获取像素数量缩放后对应的像素数量。
-    /// </summary>
-    /// <param name="pixel">缩放前的像素数量。</param>
-    /// <returns>返回缩放后应当由的像素数量。</returns>
-    public static int GetActualPixel(double pixel)
-    {
-        return Convert.ToInt32(pixel * PixelZoom);
-    }
+    [DllImport("user32.dll")]
+    private static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
 }

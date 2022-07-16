@@ -4,8 +4,8 @@ namespace MCHUB;
 
 public sealed partial class MainWindow : Window
 {
-    private AppWindow AppWindow;
     public static User CurrentUser = null;
+    private AppWindow AppWindow;
 
     public MainWindow()
     {
@@ -36,16 +36,6 @@ public sealed partial class MainWindow : Window
         }
 
         AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
-    }
-
-    private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
-    {
-        UpdateDragRects();
-    }
-
-    private void MainGrid_Loaded(object sender, RoutedEventArgs e)
-    {
-        UpdateDragRects();
     }
 
     /// <summary>
@@ -93,6 +83,16 @@ public sealed partial class MainWindow : Window
             foreach (Minecraft item in Minecraft.GetMinecrafts((importerGameDialog.Content as ImportGameDialogContent).PathBox.Text))
                 Navigation.MenuItems.Add(new NavigationViewItem() { Icon = new SymbolIcon(Symbol.Flag), Content = item.VersionID, Tag = item });
         }
+    }
+
+    private void MainGrid_Loaded(object sender, RoutedEventArgs e)
+    {
+        UpdateDragRects();
+    }
+
+    private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+    {
+        UpdateDragRects();
     }
 
     private void Navigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)

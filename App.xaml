@@ -9,6 +9,7 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
+            <Color x:Key="LaunchButtonColor">#B1FF3D</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

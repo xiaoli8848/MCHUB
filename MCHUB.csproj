@@ -61,7 +61,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Launch\ManagePanel.xaml">
+    <Page Update="Dialogs\ManagePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

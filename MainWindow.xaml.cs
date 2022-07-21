@@ -1,6 +1,4 @@
 ﻿using Windows.Graphics;
-using System.Runtime.InteropServices; // For DllImport
-using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
 
 namespace MCHUB;
 
@@ -17,15 +15,15 @@ public sealed partial class MainWindow : Window
         LauncherDataHelper.Init();
 
         AppWindow = UIHelper.GetAppWindow();
-        AppWindow.Resize(new SizeInt32(UIHelper.GetActualPixel(800), UIHelper.GetActualPixel(600)));
+        AppWindow.Resize(new SizeInt32(UIHelper.GetActualPixel(900), UIHelper.GetActualPixel(600)));
         //自定义标题栏。
         this.Title = "MCHUB";
         //设置标题栏颜色并刷新。
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
         this.ExtendsContentIntoTitleBar = true;
-        ResourceDictionary res = Application.Current.Resources;
-        res["WindowCaptionBackground"] = Colors.Transparent;
-        res["WindowCaptionForeground"] = Colors.Black;
+        //ResourceDictionary res = Application.Current.Resources;
+        //res["WindowCaptionBackground"] = Colors.Transparent;
+        //res["WindowCaptionForeground"] = Colors.Black;
         if (UIHelper.MainWindow_Handle == UIHelper.GetActiveWindow())
         {
             UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
@@ -37,11 +35,15 @@ public sealed partial class MainWindow : Window
             UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
         }
 
-        AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
+        //AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
         this.Closed += (_, _) =>
         {
             LauncherDataHelper.RemoveTempFiles();
         };
+#if DEBUG
+        foreach (Minecraft item in Minecraft.GetMinecrafts(@"D:\Program Files\Minecraft\1.15\.minecraft"))
+            Navigation.Items.Add(item);
+#endif
     }
 
     /// <summary>
@@ -51,27 +53,29 @@ public sealed partial class MainWindow : Window
     /// </summary>
     public void UpdateDragRects()
     {
+        //AppWindowTitleBar titleBar = AppWindow.TitleBar;
+
+        //// 标题栏实际尺寸。
+        //var totalWidth = UIHelper.GetActualPixel(AppTitleBar.ActualWidth);
+        //var totalHeight = UIHelper.GetActualPixel(AppTitleBar.ActualHeight);
+
+        //// 自定义控件的左边界相对于整个控件左边界的偏移量。
+        //var controlLeftOffset = UIHelper.GetActualPixel(CustomTitleBarControls.ActualOffset.X);
+
+        //// 自定义控件的右边界相对于整个控件左边界的偏移量。
+        //var controlRightOffset = UIHelper.GetActualPixel(controlLeftOffset + CustomTitleBarControls.ActualWidth);
+
+        //var leftSpace = controlLeftOffset;
+        //var rightSpace = totalWidth - controlLeftOffset - UIHelper.GetActualPixel(CustomTitleBarControls.ActualWidth);
+        //var CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
+        //RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / UIHelper.PixelZoom);
+
+        //// TODO 计算窗口按钮宽度并排除
+        //RectInt32 leftRect = new(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));
+        //RectInt32 rightRect = new(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace - CaptionButtonOcclusionWidthRight), Convert.ToInt32(totalHeight));
+        //titleBar.SetDragRectangles(new RectInt32[] { leftRect, rightRect });
         AppWindowTitleBar titleBar = AppWindow.TitleBar;
-
-        // 标题栏实际尺寸。
-        var totalWidth = UIHelper.GetActualPixel(AppTitleBar.ActualWidth);
-        var totalHeight = UIHelper.GetActualPixel(AppTitleBar.ActualHeight);
-
-        // 自定义控件的左边界相对于整个控件左边界的偏移量。
-        var controlLeftOffset = UIHelper.GetActualPixel(CustomTitleBarControls.ActualOffset.X);
-
-        // 自定义控件的右边界相对于整个控件左边界的偏移量。
-        var controlRightOffset = UIHelper.GetActualPixel(controlLeftOffset + CustomTitleBarControls.ActualWidth);
-
-        var leftSpace = controlLeftOffset;
-        var rightSpace = totalWidth - controlLeftOffset - UIHelper.GetActualPixel(CustomTitleBarControls.ActualWidth);
-        var CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
-        RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / UIHelper.PixelZoom);
-
-        // TODO 计算窗口按钮宽度并排除
-        RectInt32 leftRect = new(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));
-        RectInt32 rightRect = new(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace - CaptionButtonOcclusionWidthRight), Convert.ToInt32(totalHeight));
-        titleBar.SetDragRectangles(new RectInt32[] { leftRect, rightRect });
+        titleBar.SetDragRectangles(new RectInt32[] { new RectInt32(0, 0, Convert.ToInt32(UIHelper.GetActualPixel(this.Content.ActualSize.Length()) - titleBar.RightInset), UIHelper.GetActualPixel(AppTitleBar.ActualHeight))});
     }
 
     //下载命令
@@ -87,7 +91,7 @@ public sealed partial class MainWindow : Window
         if (await importerGameDialog.ShowAsync() == ContentDialogResult.Primary)
         {
             foreach (Minecraft item in Minecraft.GetMinecrafts((importerGameDialog.Content as ImportGameDialogContent).PathBox.Text))
-                Navigation.MenuItems.Add(new NavigationViewItem() { Icon = new SymbolIcon(Symbol.Flag), Content = item.VersionID, Tag = item });
+                Navigation.Items.Add(item);
         }
     }
 
@@ -106,6 +110,11 @@ public sealed partial class MainWindow : Window
     {
         if ((sender.SelectedItem as NavigationViewItem).Tag is Minecraft)
             MainFrame.Navigate(typeof(ManagePanel), (sender.SelectedItem as NavigationViewItem).Tag);
+    }
+
+    private void Navigation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        MainFrame.Navigate(typeof(ManagePanel), e.AddedItems[0]);
     }
 }
 

@@ -32,28 +32,29 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
         <!--自定义窗口标题栏，不含按钮-->
-        <Border x:Name="AppTitleBar" Grid.Column="0" Height="52" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" BorderBrush="{StaticResource AccentControlElevationBorderBrush}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="LeftPaddingColumn" Width="16"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition x:Name="RightPaddingColumn" Width="136"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind Title}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,18,0,18" FontSize="16"/>
-                <Grid x:Name="CustomTitleBarControls" Grid.Column="1" HorizontalAlignment="Right" Margin="0,2,6,0" Width="auto">
-                    <Button CornerRadius="10" x:Name="AccountButton">
+        <Grid x:Name="AppTitleBar" Grid.Row="0" Grid.Column="0" Height="38" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaddingColumn" Width="16"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind Title}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10" FontSize="16"/>
+            <Grid x:Name="CustomTitleBarControls" Grid.Column="1" HorizontalAlignment="Center" Margin="100,2,6,0" Width="0">
+                <!--<Button CornerRadius="10" x:Name="AccountButton">
                         <StackPanel Orientation="Horizontal">
                             <PersonPicture Height="32" Width="32"/>
                             <TextBlock Text="账户" Margin="8,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
-                    </Button>
-                </Grid>
+                    </Button>-->
             </Grid>
-        </Border>
+        </Grid>
 
-        <NavigationView Grid.Row="1" IsBackButtonVisible="Collapsed" x:Name="Navigation" ItemInvoked="Navigation_ItemInvoked" PaneDisplayMode="Top">
+        <!--<NavigationView Grid.Row="1" IsBackButtonVisible="Collapsed" x:Name="Navigation" ItemInvoked="Navigation_ItemInvoked" PaneDisplayMode="Top">
             <NavigationView.PaneHeader>
                 <CommandBar Width="auto" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Grid.Column="1">
                     <AppBarButton x:Name="ImportGameButton" Command="{StaticResource ImportGameCommand}"/>
@@ -61,6 +62,21 @@
                 </CommandBar>
             </NavigationView.PaneHeader>
             <Frame x:Name="MainFrame"/>
-        </NavigationView>
+        </NavigationView>-->
+        <ListView Grid.Row="1" Grid.Column="0" x:Name="Navigation" SelectionMode="Single" SelectionChanged="Navigation_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Minecraft">
+                    <Grid Width="240" Height="70">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" Margin="12,6,0,0"/>
+                        <TextBlock Grid.Row="1" Text="Release" Style="{StaticResource BodyTextBlockStyle}" Margin="12,0,0,6"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Frame Grid.RowSpan="2" Grid.Column="1" x:Name="MainFrame" Background="White"/>
     </Grid>
 </Window>

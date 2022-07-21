@@ -1,7 +1,11 @@
 ﻿using ModuleLauncher.Re.Launcher;
 using ModuleLauncher.Re.Locators;
+using ModuleLauncher.Re.Models.Locators.Minecraft;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.Storage;
+using WinRT;
 using LocalVersion = ModuleLauncher.Re.Models.Locators.LocalVersion;
 
 namespace MCHUB;
@@ -9,13 +13,15 @@ namespace MCHUB;
 /// <summary>
 /// Minecraft游戏类。描述一个Minecraft实例，包括其路径、版本信息和操作命令实例等。
 /// </summary>
-public sealed class Minecraft
+public sealed class Minecraft : ModuleLauncher.Re.Models.Locators.Minecraft.Minecraft
 {
-    public DirectoryInfo Path { get; init; } //版本路径
-    public DirectoryInfo Root { get; init; } //.minecraft根路径
-    public LocalVersion Version { get; init; }   //版本信息
-    public LocalityLocator Locator { get; init; }    //minecraft locator
-    public string VersionID { get; init; }
+    // 版本路径
+    public DirectoryInfo Path => Locality.Version;
+    // .minecraft根路径
+    public DirectoryInfo Root => Locality.Root;
+    // 版本ID
+    public string VersionID => Raw.Id;
+    public string VersionType => Raw.Type;
     public ICommand LaunchCommand { get; init; }
     public ICommand RemoveCommand { get; init; }
     /// <summary>
@@ -29,17 +35,13 @@ public sealed class Minecraft
         var locator = new LocalityLocator(path);
         foreach (LocalVersion item in locator.GetLocalVersions())
         {
-            list.Add(new Minecraft(item.Version, item.Root, item, locator));
+            string json = System.IO.File.ReadAllText(item.Json.FullName);
+            list.Add(new Minecraft() { Locality = item, Raw = JToken.Parse(json).ToObject<MinecraftJson>() });
         }
         return list;
     }
-    private Minecraft(DirectoryInfo path, DirectoryInfo root, LocalVersion version, LocalityLocator locator) : base()
+    private Minecraft() : base()
     {
-        this.Path = path;
-        this.Root = root;
-        this.Version = version;
-        this.Locator = locator;
-        this.VersionID = new DirectoryInfo(this.Version.Version.FullName).Name;
         var launchCommand = new StandardUICommand(StandardUICommandKind.Play);
         launchCommand.ExecuteRequested += LaunchCommand_ExecuteRequestedAsync;
         this.LaunchCommand = launchCommand;
@@ -75,7 +77,7 @@ public sealed class Minecraft
         int? maxMemory = null
         )
     {
-        var launcher = new Launcher(new ModuleLauncher.Re.Locators.Concretes.MinecraftLocator(this.Locator))
+        var launcher = new Launcher(new ModuleLauncher.Re.Locators.Concretes.MinecraftLocator(new LocalityLocator(this.Root.FullName)))
         {
             Authentication = await authenticator.Authenticate(),
             Java = javaEnvironment.javaw.FullName,

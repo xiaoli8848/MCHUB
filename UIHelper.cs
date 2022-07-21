@@ -10,6 +10,7 @@ global using System.Collections.Generic;
 global using System.IO;
 global using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using WinRT;
 using WinRT.Interop;
 
 namespace MCHUB;
@@ -108,4 +109,87 @@ public static class UIHelper
 
     [DllImport("user32.dll")]
     private static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
+
+    private static WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
+    private static Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
+    private static Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration m_configurationSource;
+    public static bool TrySetMicaBackdrop()
+    {
+        if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
+        {
+            m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
+            m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
+
+            // Hooking up the policy object
+            m_configurationSource = new Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration();
+            GetMainWindow().Activated += (_, args) =>
+            {
+                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            };
+            ((FrameworkElement)GetMainWindow().Content).ActualThemeChanged += (_, _) =>
+            {
+                if (m_configurationSource != null)
+                {
+                    SetConfigurationSourceTheme();
+                }
+            };
+
+            // Initial configuration state.
+            m_configurationSource.IsInputActive = true;
+            SetConfigurationSourceTheme();
+
+            m_micaController = new Microsoft.UI.Composition.SystemBackdrops.MicaController();
+
+            // Enable the system backdrop.
+            // Note: Be sure to have "using WinRT;" to support the Window.As<...>() call.
+            m_micaController.AddSystemBackdropTarget(GetMainWindow().As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            return true; // succeeded
+        }
+
+        return false; // Mica is not supported on UIHelper.GetMainWindow() system
+    }
+
+    private static void SetConfigurationSourceTheme()
+    {
+        switch (((FrameworkElement)GetMainWindow().Content).ActualTheme)
+        {
+            case ElementTheme.Dark: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark; break;
+            case ElementTheme.Light: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light; break;
+            case ElementTheme.Default: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default; break;
+        }
+    }
+}
+public class WindowsSystemDispatcherQueueHelper
+{
+    [StructLayout(LayoutKind.Sequential)]
+    struct DispatcherQueueOptions
+    {
+        internal int dwSize;
+        internal int threadType;
+        internal int apartmentType;
+    }
+
+    [DllImport("CoreMessaging.dll")]
+    private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options, [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
+
+    object m_dispatcherQueueController = null;
+    public void EnsureWindowsSystemDispatcherQueueController()
+    {
+        if (Windows.System.DispatcherQueue.GetForCurrentThread() != null)
+        {
+            // one already exists, so we'll just use it.
+            return;
+        }
+
+        if (m_dispatcherQueueController == null)
+        {
+            DispatcherQueueOptions options;
+            options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));
+            options.threadType = 2;    // DQTYPE_THREAD_CURRENT
+            options.apartmentType = 2; // DQTAT_COM_STA
+
+            CreateDispatcherQueueController(options, ref m_dispatcherQueueController);
+        }
+    }
 }

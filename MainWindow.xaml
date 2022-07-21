@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Closed="Window_Closed"
     SizeChanged="MainWindow_SizeChanged">
 
     <Grid x:Name="MainGrid" Loaded="MainGrid_Loaded">
@@ -35,7 +34,7 @@
         </Grid.RowDefinitions>
 
         <!--自定义窗口标题栏，不含按钮-->
-        <Border x:Name="AppTitleBar" Grid.Column="0" Height="52" VerticalAlignment="Top" Background="Transparent" BorderThickness="0,0,0,0.5" BorderBrush="{StaticResource AccentControlElevationBorderBrush}">
+        <Border x:Name="AppTitleBar" Grid.Column="0" Height="52" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" BorderBrush="{StaticResource AccentControlElevationBorderBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="LeftPaddingColumn" Width="16"/>

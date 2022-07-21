@@ -1,4 +1,6 @@
 ﻿using Windows.Graphics;
+using System.Runtime.InteropServices; // For DllImport
+using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
 
 namespace MCHUB;
 
@@ -36,6 +38,10 @@ public sealed partial class MainWindow : Window
         }
 
         AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
+        this.Closed += (_, _) =>
+        {
+            LauncherDataHelper.RemoveTempFiles();
+        };
     }
 
     /// <summary>
@@ -88,6 +94,7 @@ public sealed partial class MainWindow : Window
     private void MainGrid_Loaded(object sender, RoutedEventArgs e)
     {
         UpdateDragRects();
+        UIHelper.TrySetMicaBackdrop();
     }
 
     private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
@@ -99,11 +106,6 @@ public sealed partial class MainWindow : Window
     {
         if ((sender.SelectedItem as NavigationViewItem).Tag is Minecraft)
             MainFrame.Navigate(typeof(ManagePanel), (sender.SelectedItem as NavigationViewItem).Tag);
-    }
-
-    private void Window_Closed(object sender, WindowEventArgs args)
-    {
-        LauncherDataHelper.RemoveTempFiles();
     }
 }
 

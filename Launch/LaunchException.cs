@@ -1,4 +1,6 @@
-﻿namespace MCHUB;
+﻿using MCHUB.Utility;
+
+namespace MCHUB;
 
 /// <summary>
 /// 启动错误类。描述启动游戏时发生的错误。

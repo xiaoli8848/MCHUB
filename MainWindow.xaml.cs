@@ -1,4 +1,6 @@
-﻿using Windows.Graphics;
+﻿using MCHUB.Utility;
+using ModuleLauncher.Re.Authenticators;
+using Windows.Graphics;
 
 namespace MCHUB;
 
@@ -35,7 +37,7 @@ public sealed partial class MainWindow : Window
         //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
         //}
 
-        //AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
+        AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
         this.Closed += (_, _) =>
         {
             LauncherDataHelper.RemoveTempFiles();

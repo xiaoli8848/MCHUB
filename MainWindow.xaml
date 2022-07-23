@@ -31,6 +31,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="260"/>
@@ -45,12 +46,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind Title}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10" FontSize="16"/>
             <Grid x:Name="CustomTitleBarControls" Grid.Column="1" HorizontalAlignment="Center" Margin="100,2,6,0" Width="0">
-                <!--<Button CornerRadius="10" x:Name="AccountButton">
-                        <StackPanel Orientation="Horizontal">
-                            <PersonPicture Height="32" Width="32"/>
-                            <TextBlock Text="账户" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>-->
+                
             </Grid>
         </Grid>
 
@@ -88,5 +84,13 @@
             </ListView>
         </Grid>
         <Frame Grid.RowSpan="2" Grid.Column="1" x:Name="MainFrame" Background="White"/>
+        <Grid Grid.Row="2">
+            <Button CornerRadius="10" x:Name="AccountButton" Background="Transparent" BorderBrush="Transparent" VerticalAlignment="Center" Margin="10,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <PersonPicture Height="32" Width="32"/>
+                    <TextBlock Text="账户" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
     </Grid>
 </Window>

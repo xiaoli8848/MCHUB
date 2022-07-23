@@ -22,12 +22,17 @@
                 <TextBlock x:Name="UserName" Text="XiaoLi8848" Style="{StaticResource SubtitleTextBlockStyle}" Margin="10,12,10,0"/>
                 <TextBlock x:Name="CoName" Text="XLTOM0631@outlook.com" Margin="10,5,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
                 <TextBlock x:Name="Info" Text="微软账户，在线" Margin="10,6,10,0" Style="{StaticResource BaseTextBlockStyle}"/>
-                <Grid Margin="0,6,0,0" Height="50">
+                <Grid Margin="10,6,0,0" Height="50">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="36"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Source="Images//MicrosoftIcon.png" Width="36" Height="36"/>
+                    <Canvas Width="36" Height="36" Background="Transparent">
+                        <Rectangle Fill="Black" Canvas.Left="0" Canvas.Top="0" Width="17" Height="17"/>
+                        <Rectangle Fill="Black" Canvas.Left="19" Canvas.Top="0" Width="17" Height="17"/>
+                        <Rectangle Fill="Black" Canvas.Left="0" Canvas.Top="19" Width="17" Height="17"/>
+                        <Rectangle Fill="Black" Canvas.Left="19" Canvas.Top="19" Width="17" Height="17"/>
+                    </Canvas>
                     <TextBlock Grid.Column="1" Text="Microsoft" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}" FontSize="30"/>
                 </Grid>
             </StackPanel>

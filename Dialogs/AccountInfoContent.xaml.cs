@@ -1,4 +1,6 @@
-﻿namespace MCHUB;
+﻿using MCHUB.Utility;
+
+namespace MCHUB;
 
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
@@ -16,22 +18,31 @@ public sealed partial class AccountInfoContent : Page
         User user = MainWindow.CurrentUser;
         switch (user)
         {
-            case MojangUser mUser:
-                (content as AccountInfoContent).Info.Text = "在线用户，" + (mUser.IsAvailabel ? "在线" : "离线");
+            case MicrosoftUser mUser:
+                (content as AccountInfoContent).Info.Text = "Microsoft用户";
                 (content as AccountInfoContent).RefreshButton.Visibility = Visibility.Visible;
                 (content as AccountInfoContent).RefreshButton.Click += async (_, _) => { await LauncherDataHelper.RefreshUsers(); };
+                (content as AccountInfoContent).CoName.Text = mUser.IsAvailabel ? "在线" : "离线";
                 break;
             case OfflineUser _:
-                (content as AccountInfoContent).Info.Text = "离线用户，离线";
+                (content as AccountInfoContent).Info.Text = "离线用户";
                 (content as AccountInfoContent).RefreshButton.Visibility = Visibility.Collapsed;
+                (content as AccountInfoContent).CoName.Visibility = Visibility.Collapsed;
                 break;
             case null:
                 StackPanel panel = new();
                 TextBlock text = new() { Style = (Style)Application.Current.Resources["BaseTextBlockStyle"], Text = "尚未登录。", Margin = new Thickness(0, 0, 0, 12) };
                 panel.Children.Add(text);
-                var button = new Button() { Content = "登录" };
-                button.Click += async (sender, args) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
-                panel.Children.Add(button);
+                var offlineLoginButton = new Button() { Content = "登录离线账户" };
+                offlineLoginButton.Click += async (sender, args) => { await LoginAccountDialog.LoginAsync(UIHelper.GetMainWindow().Content.XamlRoot); };
+                panel.Children.Add(offlineLoginButton);
+                var onlineLoginButton = new Button() { Content = "登录Microsoft账户", Margin = new Thickness(0, 8, 0, 0) };
+                onlineLoginButton.Click += async (sender, args) => {
+                    var user = new MicrosoftUser(await MicrosoftUser.GetCodeAsync());
+                    MainWindow.CurrentUser = user;
+                    LauncherDataHelper.Users.Add(user);
+                    };
+                panel.Children.Add(onlineLoginButton);
                 content = panel;
                 return content;
         }

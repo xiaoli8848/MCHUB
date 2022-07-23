@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using WinRT;
 using WinRT.Interop;
 
-namespace MCHUB;
+namespace MCHUB.Utility;
 /// <summary>
 /// 实用工具类。帮助获取窗口句柄、与系统交互等。
 /// </summary>
@@ -103,7 +103,7 @@ public static class UIHelper
             throw new Exception("Could not get DPI for monitor.");
         }
 
-        var scaleFactorPercent = (uint)((((long)dpiX * 100) + (96 >> 1)) / 96);
+        var scaleFactorPercent = (uint)(((long)dpiX * 100 + (96 >> 1)) / 96);
         return scaleFactorPercent / 100.0;
     }
 

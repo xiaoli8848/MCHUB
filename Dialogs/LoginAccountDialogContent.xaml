@@ -8,12 +8,6 @@
     mc:Ignorable="d">
 
     <StackPanel>
-        <ComboBox x:Name="combobox" Header="账户类型" SelectedIndex="0" x:FieldModifier="public">
-            <x:String>离线账户</x:String>
-            <x:String>Mojang账户</x:String>
-            <x:String>微软账户</x:String>
-        </ComboBox>
         <TextBox x:Name="username" Header="账户名：" x:FieldModifier="public"/>
-        <PasswordBox x:Name="password" Header="密码：" Visibility="Collapsed" x:FieldModifier="public"/>
     </StackPanel>
 </Page>

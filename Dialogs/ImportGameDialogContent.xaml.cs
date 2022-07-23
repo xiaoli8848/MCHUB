@@ -39,7 +39,7 @@ public sealed class ImporterGameDialog : ContentDialog
 
             StorageFolder folder = await picker.PickSingleFolderAsync();
 
-            (this.Content as ImportGameDialogContent).PathBox.Text = folder.Path;
+            (this.Content as ImportGameDialogContent).PathBox.Text = folder.Path ?? "";
             this.IsPrimaryButtonEnabled = true;
         };
     }

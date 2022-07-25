@@ -46,19 +46,10 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind Title}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,10,0,10" FontSize="16"/>
             <Grid x:Name="CustomTitleBarControls" Grid.Column="1" HorizontalAlignment="Center" Margin="100,2,6,0" Width="0">
-                
+
             </Grid>
         </Grid>
-
-        <!--<NavigationView Grid.Row="1" IsBackButtonVisible="Collapsed" x:Name="Navigation" ItemInvoked="Navigation_ItemInvoked" PaneDisplayMode="Top">
-            <NavigationView.PaneHeader>
-                <CommandBar Width="auto" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" Grid.Column="1">
-                    <AppBarButton x:Name="ImportGameButton" Command="{StaticResource ImportGameCommand}"/>
-                    <AppBarButton x:Name="DownloadGameButton" Command="{StaticResource DownloadGameCommand}"/>
-                </CommandBar>
-            </NavigationView.PaneHeader>
-            <Frame x:Name="MainFrame"/>
-        </NavigationView>-->
+        
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -68,19 +59,7 @@
                 <AppBarButton Icon="Import" Label="导入" Command="{StaticResource ImportGameCommand}"/>
                 <AppBarButton Icon="Download" Label="下载" Command="{StaticResource DownloadGameCommand}"/>
             </CommandBar>
-            <ListView x:Name="Navigation" Grid.Row="1" SelectionMode="Single" SelectionChanged="Navigation_SelectionChanged">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Minecraft">
-                        <Grid Width="240" Height="70">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" Margin="12,6,0,0"/>
-                            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}" Margin="12,0,0,6"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+            <ListView x:Name="Navigation" Grid.Row="1" SelectionMode="Single" SelectionChanged="Navigation_SelectionChanged" ItemTemplate="{StaticResource MinecraftListViewTemplate}">
             </ListView>
         </Grid>
         <Frame Grid.RowSpan="2" Grid.Column="1" x:Name="MainFrame" Background="White"/>

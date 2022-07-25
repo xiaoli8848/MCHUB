@@ -1,0 +1,22 @@
+﻿<ResourceDictionary
+    x:Class="MCHUB.Utility.MCHUBResource"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MCHUB.Utility"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local1="using:MCHUB"
+    mc:Ignorable="d">
+    
+    <Color x:Key="LaunchButtonColor">#B1FF3D</Color>
+    <DataTemplate x:Key="MinecraftListViewTemplate" x:DataType="local1:Minecraft">
+        <Grid Width="240" Height="70">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" Margin="12,6,0,0"/>
+            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}" Margin="12,0,0,6"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

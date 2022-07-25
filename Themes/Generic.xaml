@@ -3,22 +3,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MCHUB">
 
-    <Style TargetType="local:ItemInfoBar" >
+    <Style TargetType="local:ItemInfoBar">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ItemInfoBar">
                     <Grid CornerRadius="8" Height="60" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Image Grid.RowSpan="2" Grid.Column="0" Source="{TemplateBinding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="44" Height="44"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{TemplateBinding Title}" Style="{CustomResource TitleTextBlockStyle}" HorizontalAlignment="Left" Margin="8,12,0,4"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{TemplateBinding Label}" Style="{CustomResource BaseTextBlockStyle}" HorizontalAlignment="Left" Margin="8,4,0,12"/>
+                        <Image Grid.RowSpan="2" Grid.Column="0" Source="{TemplateBinding Icon}"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="44" Height="44" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{TemplateBinding Title}"
+                                   Style="{CustomResource TitleTextBlockStyle}" HorizontalAlignment="Left"
+                                   Margin="8,12,0,4" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{TemplateBinding Label}"
+                                   Style="{CustomResource BaseTextBlockStyle}" HorizontalAlignment="Left"
+                                   Margin="8,4,0,12" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

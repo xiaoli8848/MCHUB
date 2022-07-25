@@ -1,18 +1,23 @@
-﻿using ModuleLauncher.Re.Authenticators;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using ModuleLauncher.Re.Authenticators;
 using ModuleLauncher.Re.Models.Authenticators;
 using Newtonsoft.Json;
-using System.Linq;
 using System.Timers;
 
 namespace MCHUB.Utility;
 
 public static class LauncherDataHelper
 {
-    public static List<FileInfo> TempFiles = new();
-    public static List<User> Users = new();
+    public static ObservableCollection<FileInfo> TempFiles = new();
+    public static ObservableCollection<User> Users = new();
+    public static ObservableCollection<MinecraftRoot> MinecraftRoots = new();
 
-    public const double USER_FRESH_TIME = 60000;
-    public const string MICROSOFT_OAUTH_URL = @"https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code &scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf";
+    public const double UserFreshTime = 60000;
+
+    public const string MicrosoftOauthUrl =
+        @"https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code &scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf";
 
     /// <summary>
     /// 创建并提供一个缓存文件信息。
@@ -31,10 +36,7 @@ public static class LauncherDataHelper
 
     public static void RemoveTempFiles()
     {
-        foreach (FileInfo file in TempFiles)
-        {
-            File.Delete(file.FullName);
-        }
+        foreach (var file in TempFiles) File.Delete(file.FullName);
     }
 
     public static void Init()
@@ -42,7 +44,7 @@ public static class LauncherDataHelper
         var timer_userRefresh = new Timer
         {
             Enabled = true,
-            Interval = USER_FRESH_TIME
+            Interval = UserFreshTime
         };
         timer_userRefresh.Start();
         timer_userRefresh.Elapsed += RefreshUsers;
@@ -50,17 +52,22 @@ public static class LauncherDataHelper
 
     private static async void RefreshUsers(object source, ElapsedEventArgs e)
     {
-        await RefreshUsers();
+        await RefreshUsersAsync();
     }
 
-    public static async Task RefreshUsers()
+    public static async Task RefreshUsersAsync()
     {
         List<Task<AuthenticateResult>> tasks = new();
-        foreach (MicrosoftUser item in Users.FindAll(user => user is MicrosoftUser))
-        {
+        foreach (var item in Users)
             await item.Authenticator.Authenticate();
-        }
     }
+
+    public static MinecraftRoot GetMinecraftRoot(Minecraft minecraft)
+    {
+        return MinecraftRoots.First(item => item.Path == minecraft.Root.FullName);
+    }
+
+    public static User CurrentUser = null;
 }
 
 [JsonObject(MemberSerialization.OptIn)]
@@ -74,23 +81,22 @@ public abstract class User
 public class OfflineUser : User
 {
     public override string Name { get; }
-    [JsonIgnore]
-    public override OfflineAuthenticator Authenticator { get; }
+    [JsonIgnore] public override OfflineAuthenticator Authenticator { get; }
     private string PersonPictureCode { get; }
 
-    public OfflineUser(string name, FileInfo persionPicture = null)
+    public OfflineUser(string name, FileInfo personPicture = null)
     {
         Name = name;
         Authenticator = new OfflineAuthenticator(Name);
-        if (persionPicture != null)
-            PersonPictureCode = FileDataHelper.FileToBase64Str(persionPicture.FullName);
+        if (personPicture != null)
+            PersonPictureCode = FileDataHelper.FileToBase64Str(personPicture.FullName);
     }
 
     public override FileInfo GetPersonPicture()
     {
         if (PersonPictureCode != null)
         {
-            FileInfo info = LauncherDataHelper.CreateTempFile(Name + ".png");
+            var info = LauncherDataHelper.CreateTempFile(Name + ".png");
             FileDataHelper.Base64ToOriFile(PersonPictureCode, info.FullName);
             return info;
         }
@@ -115,7 +121,7 @@ public class MicrosoftUser : User
             try
             {
                 Authenticator = new MicrosoftAuthenticator(code);
-                Task<AuthenticateResult> authentication = Authenticator.Authenticate();
+                var authentication = Authenticator.Authenticate();
                 authentication.Wait();
                 Name = authentication.Result.Name;
                 IsAvailabel = true;
@@ -144,17 +150,21 @@ public class MicrosoftUser : User
     public static async Task<string> GetCodeAsync()
     {
         string code = null;
-        var webView = new WebView2() { Source = new Uri(LauncherDataHelper.MICROSOFT_OAUTH_URL) };
+        var webView = new WebView2() { Source = new Uri(LauncherDataHelper.MicrosoftOauthUrl) };
         var grid = new Grid();
         grid.Children.Add(webView);
-        var browserWindow = new Window() { Content= grid};
-        webView.NavigationStarting += (_, e) => {
+        var browserWindow = new Window() { Content = grid };
+        webView.NavigationStarting += (_, e) =>
+        {
             var uri = e.Uri.ToString();
             var codeptr = uri.IndexOf("code=");
-            if (codeptr == -1) return;
+            if (codeptr == -1)
+            {
+                return;
+            }
             else
             {
-                code = uri.Substring(codeptr + 5, uri.IndexOf("&lc=")-codeptr-5);
+                code = uri.Substring(codeptr + 5, uri.IndexOf("&lc=") - codeptr - 5);
                 browserWindow.Close();
             }
         };
@@ -162,12 +172,10 @@ public class MicrosoftUser : User
         return await Task.Run(() =>
         {
             while (true)
-            {
                 if (code == null)
                     System.Threading.Thread.Sleep(500);
                 else
                     break;
-            }
             return code;
         });
     }

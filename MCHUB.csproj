@@ -15,6 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Dialogs\LoginAccountDialogContent.xaml" />
+    <None Remove="Images\DirectoryIcon.png" />
     <None Remove="Images\MicrosoftIcon.png" />
     <None Remove="ImporterGameDialogContent.xaml" />
     <None Remove="LoginAccountDialogContent.xaml" />
@@ -30,6 +31,7 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Images\DirectoryIcon.png" />
     <Content Include="Images\MicrosoftIcon.png" />
   </ItemGroup>
 

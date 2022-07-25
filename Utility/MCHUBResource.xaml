@@ -5,18 +5,55 @@
     xmlns:local="using:MCHUB.Utility"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local1="using:MCHUB"
+    xmlns:minecraft="using:MCHUB"
     mc:Ignorable="d">
-    
+
     <Color x:Key="LaunchButtonColor">#B1FF3D</Color>
-    <DataTemplate x:Key="MinecraftListViewTemplate" x:DataType="local1:Minecraft">
-        <Grid Width="240" Height="70">
+    <DataTemplate x:Key="MinecraftTreeViewTemplate" x:DataType="minecraft:Minecraft">
+        <TreeViewItem>
+            <Grid Width="220" Height="60">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Column="0" Grid.RowSpan="2" Source="Images/MicrosoftIcon.png"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="18"
+                           Margin="12,6,0,0" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}"
+                           Margin="12,0,0,6" />
+            </Grid>
+        </TreeViewItem>
+    </DataTemplate>
+    <DataTemplate x:Key="MinecraftViewTemplate" x:DataType="minecraft:Minecraft">
+        <Grid Width="auto" MinWidth="130" Height="60">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" Margin="12,6,0,0"/>
-            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}" Margin="12,0,0,6"/>
+            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="18"
+                           Margin="12,6,0,0" />
+            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}"
+                           Margin="12,0,0,6" />
         </Grid>
     </DataTemplate>
+    <DataTemplate x:Key="MinecraftRootTreeViewTemplate" x:DataType="minecraft:MinecraftRoot">
+        <TreeViewItem ItemsSource="{x:Bind Minecrafts}">
+            <Grid Width="220" Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="Images/DirectoryIcon.png" Width="20" Height="20" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="{x:Bind Path}" Style="{StaticResource BaseTextBlockStyle}" FontSize="14"
+                           Margin="12,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+        </TreeViewItem>
+    </DataTemplate>
+    <local:MinecraftTemplateSelector MinecraftRootTemplate="{StaticResource MinecraftRootTreeViewTemplate}"
+                                     MinecraftTemplate="{StaticResource MinecraftTreeViewTemplate}"
+                                     x:Key="MinecraftListViewTemplateSelector" />
 </ResourceDictionary>

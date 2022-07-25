@@ -16,16 +16,16 @@ public sealed class ImporterGameDialog : ContentDialog
 {
     public ImporterGameDialog(XamlRoot root) : base()
     {
-        this.Title = "导入Minecraft";
-        this.Content = new ImportGameDialogContent();
-        this.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-        this.CloseButtonText = "取消";
-        this.DefaultButton = ContentDialogButton.Close;
-        this.IsPrimaryButtonEnabled = false;
-        this.PrimaryButtonText = "导入";
-        this.XamlRoot = root;
+        Title = "导入Minecraft";
+        Content = new ImportGameDialogContent();
+        Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+        CloseButtonText = "取消";
+        DefaultButton = ContentDialogButton.Close;
+        IsPrimaryButtonEnabled = false;
+        PrimaryButtonText = "导入";
+        XamlRoot = root;
 
-        (this.Content as ImportGameDialogContent).PickerButton.Click += async (_, _) =>
+        (Content as ImportGameDialogContent).PickerButton.Click += async (_, _) =>
         {
             FolderPicker picker = new()
             {
@@ -34,13 +34,13 @@ public sealed class ImporterGameDialog : ContentDialog
                 SettingsIdentifier = "settingsIdentifier"
             };
 
-            IntPtr hwnd = WindowNative.GetWindowHandle((Application.Current as App).m_window);
+            var hwnd = WindowNative.GetWindowHandle((Application.Current as App).m_window);
             InitializeWithWindow.Initialize(picker, hwnd);
 
-            StorageFolder folder = await picker.PickSingleFolderAsync();
+            var folder = await picker.PickSingleFolderAsync();
 
-            (this.Content as ImportGameDialogContent).PathBox.Text = folder.Path ?? "";
-            this.IsPrimaryButtonEnabled = true;
+            (Content as ImportGameDialogContent).PathBox.Text = folder.Path ?? "";
+            IsPrimaryButtonEnabled = true;
         };
     }
 }

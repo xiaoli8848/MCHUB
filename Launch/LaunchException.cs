@@ -8,6 +8,7 @@ namespace MCHUB;
 public class LaunchException : ApplicationException
 {
     public Minecraft GameInstance;
+
     public LaunchException(Minecraft gameInstance, string message) : base(message)
     {
         GameInstance = gameInstance;
@@ -21,15 +22,18 @@ public class LaunchArgumentException : LaunchException
 {
     public string ParameterName { get; init; }
     public string ParameterValue { get; init; }
-    public LaunchArgumentException(Minecraft gameInstance, string parameterName, string parameterValue) : base(gameInstance, "启动参数错误。名为" + parameterName + "的参数被意外赋值为" + parameterValue + "。")
+
+    public LaunchArgumentException(Minecraft gameInstance, string parameterName, string parameterValue) : base(
+        gameInstance, "启动参数错误。名为" + parameterName + "的参数被意外赋值为" + parameterValue + "。")
     {
-        this.ParameterName = parameterName;
-        this.ParameterValue = parameterValue;
+        ParameterName = parameterName;
+        ParameterValue = parameterValue;
     }
 
-    public LaunchArgumentException(Minecraft gameInstance, string parameterName) : base(gameInstance, "启动参数错误。名为" + parameterName + "的参数被意外赋值。")
+    public LaunchArgumentException(Minecraft gameInstance, string parameterName) : base(gameInstance,
+        "启动参数错误。名为" + parameterName + "的参数被意外赋值。")
     {
-        this.ParameterName = parameterName;
+        ParameterName = parameterName;
     }
 }
 
@@ -38,7 +42,8 @@ public class LaunchArgumentException : LaunchException
 /// </summary>
 public class LaunchArgumentNullException : LaunchArgumentException
 {
-    public LaunchArgumentNullException(Minecraft gameInstance, string parameterName) : base(gameInstance, parameterName, "Null")
+    public LaunchArgumentNullException(Minecraft gameInstance, string parameterName) : base(gameInstance, parameterName,
+        "Null")
     {
     }
 }
@@ -49,6 +54,7 @@ public class LaunchArgumentNullException : LaunchArgumentException
 public class UserException : ApplicationException
 {
     public User User;
+
     public UserException(User user, string message) : base(message)
     {
         User = user;

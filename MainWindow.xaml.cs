@@ -1,12 +1,10 @@
 ﻿using MCHUB.Utility;
-using ModuleLauncher.Re.Authenticators;
 using Windows.Graphics;
 
 namespace MCHUB;
 
 public sealed partial class MainWindow : Window
 {
-    public static User CurrentUser = null;
     private AppWindow AppWindow;
 
     public MainWindow()
@@ -16,13 +14,21 @@ public sealed partial class MainWindow : Window
         UIHelper.Init(this);
         LauncherDataHelper.Init();
 
+
+        AccountButton.Click += (_, _) =>
+        {
+            new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton);
+        };
+        Closed += (_, _) => { LauncherDataHelper.RemoveTempFiles(); };
+        Navigation.ItemsSource = LauncherDataHelper.MinecraftRoots;
+
         AppWindow = UIHelper.GetAppWindow();
         AppWindow.Resize(new SizeInt32(UIHelper.GetActualPixel(900), UIHelper.GetActualPixel(600)));
         //自定义标题栏。
-        this.Title = "MCHUB";
+        Title = "MCHUB";
         //设置标题栏颜色并刷新。
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-        this.ExtendsContentIntoTitleBar = true;
+        ExtendsContentIntoTitleBar = true;
         //ResourceDictionary res = Application.Current.Resources;
         //res["WindowCaptionBackground"] = Colors.Transparent;
         //res["WindowCaptionForeground"] = Colors.Black;
@@ -36,15 +42,8 @@ public sealed partial class MainWindow : Window
         //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_ACTIVE, IntPtr.Zero);
         //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
         //}
-
-        AccountButton.Click += (_, _) => { new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton); };
-        this.Closed += (_, _) =>
-        {
-            LauncherDataHelper.RemoveTempFiles();
-        };
 #if DEBUG
-        foreach (Minecraft item in Minecraft.GetMinecrafts(@"D:\Program Files\Minecraft\1.15\.minecraft"))
-            Navigation.Items.Add(item);
+        ImportMinecrafts(@"D:\Program Files\Minecraft\1.15\.minecraft");
 #endif
     }
 
@@ -72,12 +71,16 @@ public sealed partial class MainWindow : Window
         //var CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
         //RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / UIHelper.PixelZoom);
 
-        //// TODO 计算窗口按钮宽度并排除
+        // TODO 计算窗口按钮宽度并排除。
         //RectInt32 leftRect = new(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));
         //RectInt32 rightRect = new(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace - CaptionButtonOcclusionWidthRight), Convert.ToInt32(totalHeight));
         //titleBar.SetDragRectangles(new RectInt32[] { leftRect, rightRect });
-        AppWindowTitleBar titleBar = AppWindow.TitleBar;
-        titleBar.SetDragRectangles(new RectInt32[] { new RectInt32(0, 0, Convert.ToInt32(UIHelper.GetActualPixel(this.Content.ActualSize.Length()) - titleBar.RightInset), UIHelper.GetActualPixel(AppTitleBar.ActualHeight))});
+        var titleBar = AppWindow.TitleBar;
+        titleBar.SetDragRectangles(new RectInt32[]
+        {
+            new(0, 0, Convert.ToInt32(UIHelper.GetActualPixel(Content.ActualSize.Length()) - titleBar.RightInset),
+                UIHelper.GetActualPixel(AppTitleBar.ActualHeight))
+        });
     }
 
     //下载命令
@@ -89,12 +92,9 @@ public sealed partial class MainWindow : Window
     //导入命令
     private async void ImportGameCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
     {
-        ImporterGameDialog importerGameDialog = new(this.Content.XamlRoot);
+        ImporterGameDialog importerGameDialog = new(Content.XamlRoot);
         if (await importerGameDialog.ShowAsync() == ContentDialogResult.Primary)
-        {
-            foreach (Minecraft item in Minecraft.GetMinecrafts((importerGameDialog.Content as ImportGameDialogContent).PathBox.Text))
-                Navigation.Items.Add(item);
-        }
+            ImportMinecrafts((importerGameDialog.Content as ImportGameDialogContent).PathBox.Text);
     }
 
     private void MainGrid_Loaded(object sender, RoutedEventArgs e)
@@ -108,15 +108,18 @@ public sealed partial class MainWindow : Window
         UpdateDragRects();
     }
 
-    private void Navigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    private void Navigation_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
     {
-        if ((sender.SelectedItem as NavigationViewItem).Tag is Minecraft)
-            MainFrame.Navigate(typeof(ManagePanel), (sender.SelectedItem as NavigationViewItem).Tag);
+        MainFrame.Navigate(typeof(ManagePanel),
+            args.InvokedItem is MinecraftRoot
+                ? args.InvokedItem
+                : LauncherDataHelper.GetMinecraftRoot((Minecraft)args.InvokedItem));
     }
 
-    private void Navigation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+    private void ImportMinecrafts(string path)
     {
-        MainFrame.Navigate(typeof(ManagePanel), e.AddedItems[0]);
+        LauncherDataHelper.MinecraftRoots.Add(MinecraftRoot.GetRoot(path));
     }
 }
 

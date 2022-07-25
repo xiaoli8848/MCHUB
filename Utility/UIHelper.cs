@@ -14,6 +14,7 @@ using WinRT;
 using WinRT.Interop;
 
 namespace MCHUB.Utility;
+
 /// <summary>
 /// 实用工具类。帮助获取窗口句柄、与系统交互等。
 /// </summary>
@@ -94,14 +95,11 @@ public static class UIHelper
     private static double GetScaleAdjustment()
     {
         var displayArea = DisplayArea.GetFromWindowId(MainWindow_ID, DisplayAreaFallback.Primary);
-        IntPtr hMonitor = Win32Interop.GetMonitorFromDisplayId(displayArea.DisplayId);
+        var hMonitor = Win32Interop.GetMonitorFromDisplayId(displayArea.DisplayId);
 
         // Get DPI.
         var result = GetDpiForMonitor(hMonitor, Monitor_DPI_Type.MDT_Default, out var dpiX, out var _);
-        if (result != 0)
-        {
-            throw new Exception("Could not get DPI for monitor.");
-        }
+        if (result != 0) throw new Exception("Could not get DPI for monitor.");
 
         var scaleFactorPercent = (uint)(((long)dpiX * 100 + (96 >> 1)) / 96);
         return scaleFactorPercent / 100.0;
@@ -113,6 +111,7 @@ public static class UIHelper
     private static WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
     private static Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
     private static Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration m_configurationSource;
+
     public static bool TrySetMicaBackdrop()
     {
         if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
@@ -124,14 +123,12 @@ public static class UIHelper
             m_configurationSource = new Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration();
             GetMainWindow().Activated += (_, args) =>
             {
-                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
+                m_configurationSource.IsInputActive =
+                    args.WindowActivationState != WindowActivationState.Deactivated;
             };
             ((FrameworkElement)GetMainWindow().Content).ActualThemeChanged += (_, _) =>
             {
-                if (m_configurationSource != null)
-                {
-                    SetConfigurationSourceTheme();
-                }
+                if (m_configurationSource != null) SetConfigurationSourceTheme();
             };
 
             // Initial configuration state.
@@ -142,7 +139,8 @@ public static class UIHelper
 
             // Enable the system backdrop.
             // Note: Be sure to have "using WinRT;" to support the Window.As<...>() call.
-            m_micaController.AddSystemBackdropTarget(GetMainWindow().As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+            m_micaController.AddSystemBackdropTarget(GetMainWindow()
+                .As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
             m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
             return true; // succeeded
         }
@@ -154,16 +152,23 @@ public static class UIHelper
     {
         switch (((FrameworkElement)GetMainWindow().Content).ActualTheme)
         {
-            case ElementTheme.Dark: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark; break;
-            case ElementTheme.Light: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light; break;
-            case ElementTheme.Default: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default; break;
+            case ElementTheme.Dark:
+                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark;
+                break;
+            case ElementTheme.Light:
+                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light;
+                break;
+            case ElementTheme.Default:
+                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default;
+                break;
         }
     }
 }
+
 public class WindowsSystemDispatcherQueueHelper
 {
     [StructLayout(LayoutKind.Sequential)]
-    struct DispatcherQueueOptions
+    private struct DispatcherQueueOptions
     {
         internal int dwSize;
         internal int threadType;
@@ -171,22 +176,22 @@ public class WindowsSystemDispatcherQueueHelper
     }
 
     [DllImport("CoreMessaging.dll")]
-    private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options, [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
+    private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options,
+        [In] [Out] [MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
 
-    object m_dispatcherQueueController = null;
+    private object m_dispatcherQueueController = null;
+
     public void EnsureWindowsSystemDispatcherQueueController()
     {
         if (Windows.System.DispatcherQueue.GetForCurrentThread() != null)
-        {
             // one already exists, so we'll just use it.
             return;
-        }
 
         if (m_dispatcherQueueController == null)
         {
             DispatcherQueueOptions options;
             options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));
-            options.threadType = 2;    // DQTYPE_THREAD_CURRENT
+            options.threadType = 2; // DQTYPE_THREAD_CURRENT
             options.apartmentType = 2; // DQTAT_COM_STA
 
             CreateDispatcherQueueController(options, ref m_dispatcherQueueController);

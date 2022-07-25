@@ -14,16 +14,16 @@ public sealed class LoginAccountDialog : ContentDialog
 {
     public LoginAccountDialog(XamlRoot root) : base()
     {
-        this.XamlRoot = root;
-        this.Title = "登录Minecraft离线账户";
-        this.Content = new LoginAccountDialogContent();
-        this.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-        this.CloseButtonText = "取消";
-        this.DefaultButton = ContentDialogButton.Close;
-        this.IsPrimaryButtonEnabled = false;
-        this.PrimaryButtonText = "登录";
+        XamlRoot = root;
+        Title = "登录Minecraft离线账户";
+        Content = new LoginAccountDialogContent();
+        Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+        CloseButtonText = "取消";
+        DefaultButton = ContentDialogButton.Close;
+        IsPrimaryButtonEnabled = false;
+        PrimaryButtonText = "登录";
 
-        (this.Content as LoginAccountDialogContent).username.TextChanged += OnUsernameChanged;
+        (Content as LoginAccountDialogContent).username.TextChanged += OnUsernameChanged;
     }
 
     /// <summary>
@@ -31,13 +31,13 @@ public sealed class LoginAccountDialog : ContentDialog
     /// </summary>
     private void OnUsernameChanged(object sender, TextChangedEventArgs args)
     {
-        this.IsPrimaryButtonEnabled = (this.Content as LoginAccountDialogContent).username.Text.Length != 0;
+        IsPrimaryButtonEnabled = (Content as LoginAccountDialogContent).username.Text.Length != 0;
     }
 
     public static async Task LoginAsync(XamlRoot root)
     {
         var dialog = new LoginAccountDialog(root);
-        if ((await dialog.ShowAsync()) == ContentDialogResult.Primary)
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
         {
             var user_offline = new OfflineUser((dialog.Content as LoginAccountDialogContent).username.Text);
             MainWindow.CurrentUser = user_offline;

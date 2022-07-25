@@ -7,6 +7,7 @@ public class JavaEnvironment
 {
     public FileInfo java { get; init; }
     public FileInfo javaw { get; init; }
+
     public static JavaEnvironment Current
     {
         get

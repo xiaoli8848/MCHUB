@@ -7,16 +7,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local1="using:MCHUB"
     mc:Ignorable="d">
-    
+
     <Color x:Key="LaunchButtonColor">#B1FF3D</Color>
     <DataTemplate x:Key="MinecraftListViewTemplate" x:DataType="local1:Minecraft">
         <Grid Width="240" Height="70">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" Margin="12,6,0,0"/>
-            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}" Margin="12,0,0,6"/>
+            <TextBlock Text="{x:Bind VersionID}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20"
+                       Margin="12,6,0,0" />
+            <TextBlock Grid.Row="1" Text="{x:Bind VersionType}" Style="{StaticResource BodyTextBlockStyle}"
+                       Margin="12,0,0,6" />
         </Grid>
     </DataTemplate>
+    <DataTemplate x:Key="MinecraftRootListViewTemplate" x:DataType="local1:MinecraftRoot">
+        <Grid Width="220" Height="50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="Images/DirectoryIcon.png" Width="40" Height="40" />
+            <TextBlock Grid.Column="1" Text="{x:Bind Path}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20"
+                       Margin="12,6,0,0" VerticalAlignment="Center" />
+        </Grid>
+    </DataTemplate>
+    <local:MinecraftTemplateSelector MinecraftRootTemplate="{StaticResource MinecraftRootListViewTemplate}"
+                                     MinecraftTemplate="{StaticResource MinecraftListViewTemplate}"
+                                     x:Key="MinecraftListViewTemplateSelector" />
 </ResourceDictionary>

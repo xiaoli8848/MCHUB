@@ -3,6 +3,7 @@
 public sealed partial class ManagePanel : Page
 {
     private Minecraft Current;
+
     public ManagePanel()
     {
         InitializeComponent();
@@ -17,12 +18,13 @@ public sealed partial class ManagePanel : Page
 
     private void LaunchButton_Click(object sender, RoutedEventArgs e)
     {
-        JavaEnvironment environment = JavaEnvironment.Current;
-        if (environment == null)
+        var environment = JavaEnvironment.Current;
+        if (environment == null) throw new LaunchArgumentException(Current, "JavaEnvironment", "Null");
+        Current.LaunchCommand.Execute(new LaunchArgument()
         {
-            throw new LaunchArgumentException(Current, "JavaEnvironment", "Null");
-        }
-        Current.LaunchCommand.Execute(new LaunchArgument() { Authenticator = MainWindow.CurrentUser.Authenticator, Fullscreen = false, JavaEnvironment = JavaEnvironment.Current });
+            Authenticator = MainWindow.CurrentUser.Authenticator, Fullscreen = false,
+            JavaEnvironment = JavaEnvironment.Current
+        });
     }
 
     private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
@@ -30,4 +32,3 @@ public sealed partial class ManagePanel : Page
         System.Diagnostics.Process.Start("explorer.exe", Current.Root.FullName);
     }
 }
-

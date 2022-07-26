@@ -16,7 +16,9 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=Minecrafts}" ItemTemplate="{StaticResource MinecraftViewTemplate}" BorderThickness="0" Background="Transparent" Margin="15,6,0,0" x:Name="VersionSelector"/>
+            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=Minecrafts}"
+                      ItemTemplate="{StaticResource MinecraftViewTemplate}" BorderThickness="0"
+                      Background="Transparent" Margin="20,20,0,0" x:Name="VersionSelector" Width="300" />
             <CommandBar Grid.Column="1" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right"
                         HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <CommandBar.PrimaryCommands>
@@ -57,67 +59,6 @@
                     <Setter Property="CornerRadius" Value="8" />
                 </Style>
             </Grid.Resources>
-            <Button Grid.Row="0" Grid.Column="0">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1.1*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <FontIcon Grid.RowSpan="2" Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EE;" />
-                    <TextBlock Margin="0,3,0,0" Grid.Row="0" Grid.Column="1" Text="账户管理" FontWeight="Bold" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="检视、增删账户信息。" />
-                </Grid>
-            </Button>
-            <Button Grid.Row="0" Grid.Column="1">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1.1*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <FontIcon Grid.RowSpan="2" Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="&#xEA1F;" />
-                    <TextBlock Margin="0,3,0,0" Grid.Row="0" Grid.Column="1" Text="游戏信息" FontWeight="Bold" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="检视Minecraft版本号、版本类型等。" />
-                </Grid>
-            </Button>
-            <Button Grid.Row="1" Grid.Column="0" Click="OpenFolderButton_Click">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1.1*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <SymbolIcon Grid.RowSpan="2" Grid.Column="0" Symbol="OpenLocal" />
-                    <TextBlock Margin="0,3,0,0" Grid.Row="0" Grid.Column="1" Text="用资源管理器打开" FontWeight="Bold" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="在资源管理器中查看Minecraft文件。" />
-                </Grid>
-            </Button>
-            <Button Grid.Row="1" Grid.Column="1"
-                    Background="{StaticResource LaunchButtonColor}">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1.1*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <SymbolIcon Grid.RowSpan="2" Grid.Column="0" Symbol="Play" />
-                    <TextBlock Margin="0,3,0,0" Grid.Row="0" Grid.Column="1" Text="启动" FontWeight="Bold" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="立即启动游戏。" />
-                </Grid>
-            </Button>
         </Grid>
     </Grid>
 </Page>

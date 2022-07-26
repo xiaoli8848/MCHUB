@@ -63,8 +63,10 @@
             <TreeView x:Name="Navigation" Grid.Row="1" SelectionMode="Single" ItemInvoked="Navigation_ItemInvoked"
                       ItemTemplateSelector="{StaticResource MinecraftListViewTemplateSelector}" />
         </Grid>
-        <Frame Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" x:Name="MainFrame" Background="White" />
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Frame Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" x:Name="MainFrame"
+               Background="{ThemeResource FrameBackground}" />
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch">
             <Button CornerRadius="10" x:Name="AccountButton" Background="Transparent" BorderBrush="Transparent"
                     VerticalAlignment="Center" Margin="10,0,0,0">
                 <StackPanel Orientation="Horizontal">
@@ -72,9 +74,12 @@
                     <TextBlock Text="账户" Margin="8,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" CornerRadius="20" Background="LimeGreen">
-                <SymbolIcon Symbol="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-            </Border>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" Height="50" CornerRadius="25"
+                    Background="{StaticResource LaunchButtonForegroundBrush}" x:Name="LaunchButton"
+                    Click="LaunchButton_OnClick">
+                <SymbolIcon Symbol="Play" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Foreground="{StaticResource LaunchButtonBackgroundBrush}" />
+            </Button>
         </Grid>
     </Grid>
 </Window>

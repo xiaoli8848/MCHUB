@@ -13,6 +13,7 @@ public static class LauncherDataHelper
     public static ObservableCollection<FileInfo> TempFiles = new();
     public static ObservableCollection<User> Users = new();
     public static ObservableCollection<MinecraftRoot> MinecraftRoots = new();
+    public static User CurrentUser = null;
 
     public const double UserFreshTime = 60000;
 
@@ -66,8 +67,6 @@ public static class LauncherDataHelper
     {
         return MinecraftRoots.First(item => item.Path == minecraft.Root.FullName);
     }
-
-    public static User CurrentUser = null;
 }
 
 [JsonObject(MemberSerialization.OptIn)]

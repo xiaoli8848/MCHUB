@@ -10,6 +10,7 @@ global using System.Collections.Generic;
 global using System.IO;
 global using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using Windows.UI;
 using WinRT;
 using WinRT.Interop;
 
@@ -20,23 +21,19 @@ namespace MCHUB.Utility;
 /// </summary>
 public static class UIHelper
 {
-    public const int ICON_BIG = 1;
+    #region Consts
 
+    public const int ICON_BIG = 1;
     public const int ICON_SMALL = 0;
 
     public const int WA_ACTIVE = 0x01;
 
     //static int WA_CLICKACTIVE = 0x02;
     public const int WA_INACTIVE = 0x00;
-
     public const int WM_ACTIVATE = 0x0006;
-
     public const int WM_SETICON = 0x0080;
-
     public static IntPtr MainWindow_Handle;
-
     public static WindowId MainWindow_ID;
-
     public static double PixelZoom;
 
     private enum Monitor_DPI_Type : int
@@ -47,8 +44,24 @@ public static class UIHelper
         MDT_Default = MDT_Effective_DPI
     }
 
+    #endregion
+
+    #region ImportMethods
+
     [DllImport("user32.dll")]
     public static extern IntPtr GetActiveWindow();
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+
+    [DllImport("Shcore.dll", SetLastError = true)]
+    private static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
+
+    #endregion
+
+    private static WindowsSystemDispatcherQueueHelper _mWsdqHelper; // See separate sample below for implementation
+    private static Microsoft.UI.Composition.SystemBackdrops.MicaController _mMicaController;
+    private static Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration _mConfigurationSource;
 
     /// <summary>
     /// 获取像素数量缩放后对应的像素数量。
@@ -78,15 +91,6 @@ public static class UIHelper
         PixelZoom = GetScaleAdjustment();
     }
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
-
-    [DllImport("Shcore.dll", SetLastError = true)]
-    private static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-    private static extern IntPtr GetModuleHandle(IntPtr moduleName);
-
     /// <summary>
     /// 获取缩放系数。
     /// </summary>
@@ -105,43 +109,36 @@ public static class UIHelper
         return scaleFactorPercent / 100.0;
     }
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
-
-    private static WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
-    private static Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
-    private static Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration m_configurationSource;
-
     public static bool TrySetMicaBackdrop()
     {
         if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
         {
-            m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
-            m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
+            _mWsdqHelper = new WindowsSystemDispatcherQueueHelper();
+            _mWsdqHelper.EnsureWindowsSystemDispatcherQueueController();
 
             // Hooking up the policy object
-            m_configurationSource = new Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration();
+            _mConfigurationSource = new Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration();
             GetMainWindow().Activated += (_, args) =>
             {
-                m_configurationSource.IsInputActive =
+                _mConfigurationSource.IsInputActive =
                     args.WindowActivationState != WindowActivationState.Deactivated;
             };
             ((FrameworkElement)GetMainWindow().Content).ActualThemeChanged += (_, _) =>
             {
-                if (m_configurationSource != null) SetConfigurationSourceTheme();
+                if (_mConfigurationSource != null) SetConfigurationSourceTheme();
             };
 
             // Initial configuration state.
-            m_configurationSource.IsInputActive = true;
+            _mConfigurationSource.IsInputActive = true;
             SetConfigurationSourceTheme();
 
-            m_micaController = new Microsoft.UI.Composition.SystemBackdrops.MicaController();
+            _mMicaController = new Microsoft.UI.Composition.SystemBackdrops.MicaController();
 
             // Enable the system backdrop.
             // Note: Be sure to have "using WinRT;" to support the Window.As<...>() call.
-            m_micaController.AddSystemBackdropTarget(GetMainWindow()
+            _mMicaController.AddSystemBackdropTarget(GetMainWindow()
                 .As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
-            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            _mMicaController.SetSystemBackdropConfiguration(_mConfigurationSource);
             return true; // succeeded
         }
 
@@ -153,14 +150,31 @@ public static class UIHelper
         switch (((FrameworkElement)GetMainWindow().Content).ActualTheme)
         {
             case ElementTheme.Dark:
-                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark;
+                _mConfigurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark;
                 break;
             case ElementTheme.Light:
-                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light;
+                _mConfigurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light;
                 break;
             case ElementTheme.Default:
-                m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default;
+                _mConfigurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default;
                 break;
+        }
+    }
+
+    public static void SetTitleBarColor(Color background, Color foreground)
+    {
+        var res = Application.Current.Resources;
+        res["WindowCaptionBackground"] = background;
+        res["WindowCaptionForeground"] = foreground;
+        if (MainWindow_Handle == GetActiveWindow())
+        {
+            SendMessage(MainWindow_Handle, WM_ACTIVATE, WA_INACTIVE, IntPtr.Zero);
+            SendMessage(MainWindow_Handle, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
+        }
+        else
+        {
+            SendMessage(MainWindow_Handle, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
+            SendMessage(MainWindow_Handle, WM_ACTIVATE, WA_INACTIVE, IntPtr.Zero);
         }
     }
 }
@@ -177,9 +191,10 @@ public class WindowsSystemDispatcherQueueHelper
 
     [DllImport("CoreMessaging.dll")]
     private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options,
-        [In] [Out] [MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
+        [In] [Out] [MarshalAs(UnmanagedType.IUnknown)]
+        ref object dispatcherQueueController);
 
-    private object m_dispatcherQueueController = null;
+    private object _mDispatcherQueueController = null;
 
     public void EnsureWindowsSystemDispatcherQueueController()
     {
@@ -187,14 +202,14 @@ public class WindowsSystemDispatcherQueueHelper
             // one already exists, so we'll just use it.
             return;
 
-        if (m_dispatcherQueueController == null)
+        if (_mDispatcherQueueController == null)
         {
             DispatcherQueueOptions options;
             options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));
             options.threadType = 2; // DQTYPE_THREAD_CURRENT
             options.apartmentType = 2; // DQTAT_COM_STA
 
-            CreateDispatcherQueueController(options, ref m_dispatcherQueueController);
+            CreateDispatcherQueueController(options, ref _mDispatcherQueueController);
         }
     }
 }

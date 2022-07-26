@@ -1,5 +1,6 @@
 ﻿using MCHUB.Utility;
 using Windows.Graphics;
+using Windows.UI;
 
 namespace MCHUB;
 
@@ -17,7 +18,7 @@ public sealed partial class MainWindow : Window
 
         AccountButton.Click += (_, _) =>
         {
-            new Flyout() { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton);
+            new Flyout { Content = AccountInfoContent.GetContent() }.ShowAt(AccountButton);
         };
         Closed += (_, _) => { LauncherDataHelper.RemoveTempFiles(); };
         Navigation.ItemsSource = LauncherDataHelper.MinecraftRoots;
@@ -29,19 +30,6 @@ public sealed partial class MainWindow : Window
         //设置标题栏颜色并刷新。
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
         ExtendsContentIntoTitleBar = true;
-        //ResourceDictionary res = Application.Current.Resources;
-        //res["WindowCaptionBackground"] = Colors.Transparent;
-        //res["WindowCaptionForeground"] = Colors.Black;
-        //if (UIHelper.MainWindow_Handle == UIHelper.GetActiveWindow())
-        //{
-        //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
-        //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_ACTIVE, IntPtr.Zero);
-        //}
-        //else
-        //{
-        //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_ACTIVE, IntPtr.Zero);
-        //    UIHelper.SendMessage(UIHelper.MainWindow_Handle, UIHelper.WM_ACTIVATE, UIHelper.WA_INACTIVE, IntPtr.Zero);
-        //}
 #if DEBUG
         ImportMinecrafts(@"D:\Program Files\Minecraft\1.15\.minecraft");
 #endif
@@ -52,29 +40,8 @@ public sealed partial class MainWindow : Window
     /// <br/>
     /// 将可拖拽部分分为两部分——自定义控件的左右两边的部分，然后计算两个部分对应的矩形区域，最后注册到窗口标题栏处。
     /// </summary>
-    public void UpdateDragRects()
+    private void UpdateDragRects()
     {
-        //AppWindowTitleBar titleBar = AppWindow.TitleBar;
-
-        //// 标题栏实际尺寸。
-        //var totalWidth = UIHelper.GetActualPixel(AppTitleBar.ActualWidth);
-        //var totalHeight = UIHelper.GetActualPixel(AppTitleBar.ActualHeight);
-
-        //// 自定义控件的左边界相对于整个控件左边界的偏移量。
-        //var controlLeftOffset = UIHelper.GetActualPixel(CustomTitleBarControls.ActualOffset.X);
-
-        //// 自定义控件的右边界相对于整个控件左边界的偏移量。
-        //var controlRightOffset = UIHelper.GetActualPixel(controlLeftOffset + CustomTitleBarControls.ActualWidth);
-
-        //var leftSpace = controlLeftOffset;
-        //var rightSpace = totalWidth - controlLeftOffset - UIHelper.GetActualPixel(CustomTitleBarControls.ActualWidth);
-        //var CaptionButtonOcclusionWidthRight = AppWindow.TitleBar.RightInset;
-        //RightPaddingColumn.Width = new GridLength(CaptionButtonOcclusionWidthRight / UIHelper.PixelZoom);
-
-        // TODO 计算窗口按钮宽度并排除。
-        //RectInt32 leftRect = new(0, 0, Convert.ToInt32(leftSpace), Convert.ToInt32(totalHeight));
-        //RectInt32 rightRect = new(Convert.ToInt32(controlRightOffset), 0, Convert.ToInt32(rightSpace - CaptionButtonOcclusionWidthRight), Convert.ToInt32(totalHeight));
-        //titleBar.SetDragRectangles(new RectInt32[] { leftRect, rightRect });
         var titleBar = AppWindow.TitleBar;
         titleBar.SetDragRectangles(new RectInt32[]
         {
@@ -116,10 +83,28 @@ public sealed partial class MainWindow : Window
                 : LauncherDataHelper.GetMinecraftRoot((Minecraft)args.InvokedItem));
     }
 
-
     private void ImportMinecrafts(string path)
     {
         LauncherDataHelper.MinecraftRoots.Add(MinecraftRoot.GetRoot(path));
+    }
+
+    public MinecraftRoot GetCurrentMinecraftRoot()
+    {
+        return Navigation.SelectedItem is MinecraftRoot
+            ? (MinecraftRoot)Navigation.SelectedItem
+            : LauncherDataHelper.GetMinecraftRoot((Minecraft)Navigation.SelectedItem);
+    }
+
+    public Minecraft GetCurrentMinecraft()
+    {
+        return Navigation.SelectedItem is Minecraft
+            ? (Minecraft)Navigation.SelectedItem
+            : ((MinecraftRoot)Navigation.SelectedItem).Minecrafts[0];
+    }
+
+    private async void LaunchButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        await GetCurrentMinecraft().LaunchAsync(LauncherDataHelper.CurrentUser.Authenticator, JavaEnvironment.Current);
     }
 }
 
